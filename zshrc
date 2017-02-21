@@ -97,6 +97,8 @@ autoload zmv
 
 clear
 
-export PATH=/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/home/bscholer/.local/bin:/home/bscholer/bin:/home/bscholer/.vimpkg/bin
+export NXJ_HOME=/home/bscholer/leJOS_NXJ
+export PATH=/home/bscholer/leJOS_NXJ/bin:/home/bscholer/leJOS_NXJ:/usr/lib64/qt-3.3/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin:/home/bscholer/.local/bin:/home/bscholer/bin:/home/bscholer/.vimpkg/bin
 ls
 source $HOME/.zsh-fuzzy-match/fuzzy-match.zsh
+. /path/to/z.sh
