@@ -60,6 +60,14 @@ Plugin 'tpope/vim-commentary'
 Plugin 'vitalk/vim-simple-todo'
 Plugin 'Chiel92/vim-autoformat'
 Plugin 'plasticboy/vim-markdown'
+Plugin 'junegunn/vim-easy-align'
+Plugin 'alvan/vim-closetag'
+Plugin 'JavaScript-Indent'
+Plugin 'lervag/vimtex'
+Plugin 'xuhdev/vim-latex-live-preview'
+
+let g:livepreview_previewer = 'mupdf'
+
 
 let g:ctrlp_use_caching = 0
 if executable('ag')
