@@ -3,7 +3,7 @@
 echo "-------- Installing Packages --------"
 apt-get update -y > /dev/null
 apt-get upgrade -y > /dev/null
-apt-get install -y zsh vim sl fonts-powerline git htop curl -y > /dev/null
+apt-get install -y zsh vim sl fonts-powerline git htop trash-cli curl -y > /dev/null
 
 # Install oh-my-zsh
 echo "-------- Installing oh-my-zsh --------"
