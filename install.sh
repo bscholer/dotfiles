@@ -73,31 +73,31 @@ install_zsh_plugins() {
   _process "→ Installing zsh plugins"
 
   _process "  → Installing zsh-autosuggestions"
-  if [ -d ~/.config/ezsh/oh-my-zsh/plugins/zsh-autosuggestions ]; then
-    cd ~/.config/ezsh/oh-my-zsh/plugins/zsh-autosuggestions && git pull --quiet
+  if [ -d ~/.oh-my-zsh/plugins/zsh-autosuggestions ]; then
+    cd ~/.oh-my-zsh/plugins/zsh-autosuggestions && git pull --quiet
   else
-    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.config/ezsh/oh-my-zsh/plugins/zsh-autosuggestions
+    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/plugins/zsh-autosuggestions
   fi
 
   _process "  → Installing zsh-syntax-highlighting"
-  if [ -d ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]; then
-    cd ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-syntax-highlighting && git pull --quiet
+  if [ -d ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting ]; then
+    cd ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && git pull --quiet
   else
-    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
   fi
 
   _process "  → Installing zsh-completions"
-  if [ -d ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-completions ]; then
-    cd ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-completions && git pull --quiet
+  if [ -d ~/.oh-my-zsh/custom/plugins/zsh-completions ]; then
+    cd ~/.oh-my-zsh/custom/plugins/zsh-completions && git pull --quiet
   else
-    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-completions ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-completions
+    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
   fi
 
   _process "  → Installing zsh-history-substring-search"
-  if [ -d ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-history-substring-search ]; then
-    cd ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-history-substring-search && git pull --quiet
+  if [ -d ~/.oh-my-zsh/custom/plugins/zsh-history-substring-search ]; then
+    cd ~/.oh-my-zsh/custom/plugins/zsh-history-substring-search && git pull --quiet
   else
-    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-history-substring-search ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-history-substring-search
+    git clone --quiet --depth=1 https://github.com/zsh-users/zsh-history-substring-search ~/.oh-my-zsh/custom/plugins/zsh-history-substring-search
   fi
 
   _success "Installed zsh plugins"
@@ -136,11 +136,18 @@ install_node() {
   _process "→ Installing node stuff"
   if ! command -v nvm &> /dev/null; then
     _process "  → Installing nvm"
-    curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh &> /dev/null | bash &> /dev/null
+
+    export NVM_DIR="$HOME/.nvm" && (
+      git clone --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+      cd "$NVM_DIR"
+      git checkout --quiet `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
+    ) && \. "$NVM_DIR/nvm.sh"
+
+    #curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh &> /dev/null | bash &> /dev/null
     source ~/.nvm/nvm.sh &> /dev/null
 
     _process "  → Installing node"
-    nvm install node &> /dev/null
+    nvm install node > /dev/null
 
     _process "  → Installing yarn"
     npm install --quiet -g yarn &> /dev/null
