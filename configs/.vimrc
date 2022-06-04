@@ -49,10 +49,13 @@ Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plugin 'enricobacis/vim-airline-clock'
 Plugin 'felipec/notmuch-vim'
 Plugin 'tpope/vim-fugitive'
+Plugin 'frazrepo/vim-rainbow'
 
 call vundle#end()
 
 filetype plugin indent on
+
+let g:rainbow_active = 1
 
 " CoC Tab completion
 inoremap <silent><expr> <TAB>
