@@ -36,9 +36,9 @@ alias open='xdg-open'            # Open a file using xdg-open
 
 # Git aliases
 function lazygit() {             # A function to add, commit, and push all at once.
-    git add .
-    git commit -a -m "$1"
-    git push
+  git add .
+  git commit -a -m "$1"
+  git push && printf "%s✓ Pushed successfully!%s\n" "$(tput setaf 2)" "$(tput sgr0)"
 }
 #function chpwd() {               # Runs everytime you change directories
 #	clear
