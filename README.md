@@ -1,5 +1,5 @@
 ### One-line Install
 
-```
-$ bash -c "$(curl -#fL raw.github.com/bscholer/dotfiles/master/install)"
+```bash
+bash -c "$(wget https://raw.github.com/bscholer/dotfiles/master/install.sh -O -)"
 ```
