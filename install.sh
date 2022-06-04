@@ -5,7 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
 DIR="/usr/local/opt/${GITHUB_REPO}"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig")
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig") # passwd, which provides chsh intentionally left out
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
@@ -21,17 +21,12 @@ _success() {
 
 install_curl_wget() {
   _process "→ Installing curl and wget" 
-  if command -v curl &> /dev/null && command -v wget &> /dev/null; then
-    echo -e "curl and wget are already installed\n"
+  if sudo apt-get install -y curl wget > /dev/null || sudo pacman -S curl wget > /dev/null || sudo dnf install -y curl wget > /dev/null || sudo yum install -y curl wget > /dev/null || sudo brew install curl wget > /dev/null || pkg install curl wget > /dev/null ; then
+    _success "Installed curl and wget"
   else
-    if sudo apt-get install -y curl wget > /dev/null || sudo pacman -S curl wget > /dev/null || sudo dnf install -y curl wget > /dev/null || sudo yum install -y curl wget > /dev/null || sudo brew install curl wget > /dev/null || pkg install curl wget > /dev/null ; then
-      echo -e "curl and wget Installed\n"
-    else
-      echo -e "Please install the following packages first, then try again: curl wget \n" && exit
-    fi
+    echo -e "Please install the following packages first, then try again: curl wget \n" && exit
   fi
 }
-
 
 install_zsh_git() {
   if command -v apt-get &> /dev/null; then
@@ -45,7 +40,7 @@ install_zsh_git() {
 
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
     echo -e "${PROGRAMS[@]}"
-    _success "${PROGRAMS[@]} Installed"
+    _success "Installed ${PROGRAMS[@]}"
   else
     echo -e "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
   fi
@@ -54,14 +49,14 @@ install_zsh_git() {
 install_ohmyzsh() {
   _process "→ Installing oh-my-zsh"
   if [ -d ~/.oh-my-zsh ]; then
-    _success "oh-my-zsh is already installed"
+    _success "Installed oh-my-zsh"
   else
     git clone --quiet --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
   fi
 
   # double check it got installed
   if [ -d ~/.oh-my-zsh ]; then
-    _success "oh-my-zsh Installed"
+    _success "Installed oh-my-zsh"
   fi
 }
 
@@ -110,16 +105,16 @@ install_fonts() {
   wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/RobotoMono/Regular/complete/Roboto%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
   wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
 
-  fc-cache -fv ~/.fonts
+  fc-cache -fv ~/.fonts > /dev/null
   _success "Installed Nerd Fonts"
 }
 
 install_powerlevel10k() {
   _process "→ Installing powerlevel10k"
-  if [ -d ~/.config/ezsh/oh-my-zsh/custom/themes/powerlevel10k ]; then
-    cd ~/.config/ezsh/oh-my-zsh/custom/themes/powerlevel10k && git pull --quiet
+  if [ -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]; then
+    cd ~/.oh-my-zsh/custom/themes/powerlevel10k && git pull --quiet
   else
-    git clone --quiet --depth=1 https://github.com/romkatv/powerlevel10k.git ~/.config/ezsh/oh-my-zsh/custom/themes/powerlevel10k
+    git clone --quiet --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
   fi
 }
 
@@ -130,7 +125,7 @@ install_node() {
     curl https://www.npmjs.org/install.sh | sh
 
     [[ $? ]] \
-    && _success "node and npm Installed"
+    && _success "Installed node and npm"
   fi
 }
 
@@ -162,24 +157,16 @@ setup_git_authorship() {
 }
 
 download_dotfiles() {
-    _process "→ Creating directory at ${DIR} and setting permissions"
-    mkdir -p "${DIR}"
-
-    _process "→ Downloading repository to /tmp directory"
-    curl -#fLo /tmp/${GITHUB_REPO}.tar.gz "https://github.com/${GITHUB_USER}/${GITHUB_REPO}/tarball/master"
-
-    _process "→ Extracting files to ${DIR}"
-    tar -zxf /tmp/${GITHUB_REPO}.tar.gz --strip-components 1 -C "${DIR}"
-
-    _process "→ Removing tarball from /tmp directory"
-    rm -rf /tmp/${GITHUB_REPO}.tar.gz
-
     _process "→ Cloining repository"
-
-    [[ $? ]] && _success "${DIR} created, repository downloaded and extracted"
+    git clone --quiet https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
 
     # Change to the dotfiles directory
     cd "${DIR}"
+
+    _process "→ Switching remote to SSH"
+    git remote set-url origin git@github.com:${GITHUB_USER}/${GITHUB_REPO}.git
+
+    [[ $? ]] && _success "Repository downloaded"
 }
 
 link_dotfiles() {
@@ -222,8 +209,21 @@ link_dotfiles() {
     fi
 }
 
+set_default_shell() {
+  if command -v chsh &> /dev/null; then
+    if chsh -s $(which zsh); then
+      _success "Changed shell"
+    else
+      echo -e "Something is wrong"
+    fi
+  else
+    echo "zsh" >> ~/.bashrc
+    echo -e "chsh not found, appending to ~/.bashrc"
+  fi
+}
+
 install() {
-  link_dotfiles
+  install_curl_wget
   install_zsh_git
   install_ohmyzsh
   install_zsh_plugins
@@ -232,15 +232,16 @@ install() {
   install_node
 
   install_fonts
-  install_powerlevel10k <--- copy setup too
+  install_powerlevel10k
 
-  install_curl_wget
   download_dotfiles
+  link_dotfiles
 
   #install_crontab
   #install_vim_plugins
   setup_git_authorship
   #generate_ssh_key
+  set_default_shell
 }
 
 install
