@@ -5,7 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
 DIR="/usr/local/opt/${GITHUB_REPO}"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig") # passwd, which provides chsh intentionally left out
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig" "htop") # passwd, which provides chsh intentionally left out
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
@@ -107,11 +107,14 @@ install_colorls() {
 }
 
 install_fonts() {
-  _process "→ Installing 🤓 Nerd Fonts version of Hack, Roboto Mono, DejaVu Sans Mono"
+  _process "→ Installing Nerd Fonts 🤓"
 
-  wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
-  wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/RobotoMono/Regular/complete/Roboto%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
-  wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
+  _process "  → Installing Hack"
+  wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
+  _process "  → Installing Roboto Mono"
+  wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/RobotoMono/Regular/complete/Roboto%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
+  _process "  → Installing DejaVu Sans Mono"
+  wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
 
   fc-cache -fv ~/.fonts > /dev/null
   _success "Installed Nerd Fonts"
@@ -130,21 +133,21 @@ install_node() {
   _process "→ Installing node"
   if ! command -v nvm &> /dev/null; then
     _process "  → Installing nvm"
-    curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh | bash > /dev/null
-    source ~/.nvm/nvm.sh > /dev/null
+    curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh &> /dev/null | bash &> /dev/null
+    source ~/.nvm/nvm.sh &> /dev/null
 
     _process "  → Installing node"
-    nvm install node > /dev/null
+    nvm install node &> /dev/null
 
     _process "  → Installing yarn"
-    npm install --quiet -g yarn
+    npm install --quiet -g yarn &> /dev/null
 
     [[ $? ]] && _success "Installed nvm, node, and npm"
   fi
 }
 
 install_vim_plugins() {
-  _process "→ Installing vim plugins"
+  _process "→ Installing vim plugins (this may take some time)"
   _process "  → Installing vundle"
   git clone --quiet https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
@@ -152,14 +155,14 @@ install_vim_plugins() {
   vim +PluginInstall +qall &> /dev/null
 
   _process "  → Installing CoC.vim"
-  cd ~/.vim/bundle/coc.nvim && yarn install --silent && yarn build --silent
+  cd ~/.vim/bundle/coc.nvim && yarn install --silent &> /dev/null && yarn build --silent &> /dev/null
 
   [[ $? ]] && _success "Installed vim plugins"
 }
 
 setup_git_authorship() {
-  GIT_AUTHOR_NAME=eval "git config --global user.name"
-  GIT_AUTHOR_EMAIL=eval "git config --global user.email"
+  GIT_AUTHOR_NAME=$(git config --global user.name)
+  GIT_AUTHOR_EMAIL=$(git config --global user.email)
 
   if [[ ! -z "$GIT_AUTHOR_NAME" ]]; then
     _process "→ Setting up Git author"
@@ -186,24 +189,25 @@ setup_git_authorship() {
 
 generate_ssh_key() {
   _process "→ Seting up SSH keys"
+  mkdir -p ~/.ssh
 
   if [ ! -f "~/.ssh/id_ed25519.pub" ]; then
     _process "  → Generating SSH keys"
-    ssh-keygen -t ed25519 -f ~/.ssh -C "$1" -q -N ""
+    ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "${USER_GIT_AUTHOR_EMAIL}" -q -N ""
   else
     _process "  → SSH key already exists"
   fi
 
   _process "  → Start ssh-agent"
-  eval "$(ssh-agent -s)"
+  eval "$(ssh-agent -s)" > /dev/null
 
   _process "  → Add SSH key to ssh-agent"
-  ssh-add ~/.ssh/id_ed25519
+  ssh-add ~/.ssh/id_ed25519 &> /dev/null
 
-  _warning "Copy and add the following SSH key to GitHub:"
+  printf "\r\nCopy and add the following SSH key to GitHub (https://github.com/settings/keys):"
   cat ~/.ssh/id_ed25519.pub
 
-  echo "https://github.com/settings/keys"
+  echo ""
 }
 
 download_dotfiles() {
@@ -241,7 +245,7 @@ link_dotfiles() {
     do
       for link in ${links[$index]}
       do
-	_process "→ Linking ${links[$index]}"
+	_process "  → Linking ${links[$index]}"
 	# set IFS back to space to split string on
 	IFS=$' '
 	# create an array of line items
@@ -261,7 +265,7 @@ link_dotfiles() {
 }
 
 set_default_shell() {
-  _process "Changing shell to zsh"
+  _process "→ Changing shell to zsh"
   if command -v chsh &> /dev/null; then
     if chsh -s $(which zsh); then
       _success "Changed shell"
@@ -276,8 +280,6 @@ set_default_shell() {
 
 
 install() {
-  read -p "Enter github email : " email
-  echo "Using email $email"
   install_curl_wget
   install_zsh_git
   install_ohmyzsh
@@ -296,7 +298,7 @@ install() {
 
   #install_crontab
   setup_git_authorship
-  generate_ssh_key "${email}"
+  generate_ssh_key
   set_default_shell
 
   _finish
