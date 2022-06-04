@@ -3,16 +3,15 @@ GITHUB_REPO="dotfiles"
 DIR="/usr/local/opt/${GITHUB_REPO}"
 
 _success() {
-  # Check if Github ssh is setup, if not, change the remote to https
-  if ! ssh -o "StrictHostKeyChecking no" -t git@github.com &> /dev/null; then
-    git remote set-url origin https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git
-  fi
-
   local message=$@
   printf "%s✓ Success:%s\n" "$(tput setaf 2)" "$(tput sgr0) $message"
 }
 
 update_dotfiles () {
+  # Check if Github ssh is setup, if not, change the remote to https
+  ssh -o "StrictHostKeyChecking no" -t git@github.com &> /dev/null || \
+    git remote set-url origin https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git
+
   if [ -d "${DIR}" ]; then
     $(cd "${DIR}" && git pull)
   fi
@@ -21,7 +20,7 @@ update_dotfiles () {
 link_dotfiles() {
   # symlink files to the HOME directory.
   if [[ -f "${DIR}/opt/files" ]]; then
-    #_process "→ Symlinking dotfiles in /configs"
+    _process "→ Symlinking dotfiles in /configs"
 
     # Set variable for list of files
     files="${DIR}/opt/files"
@@ -38,7 +37,7 @@ link_dotfiles() {
     do
       for link in ${links[$index]}
       do
-	#_process "  → Linking ${links[$index]}"
+	_process "  → Linking ${links[$index]}"
 	# set IFS back to space to split string on
 	IFS=$' '
 	# create an array of line items
@@ -53,7 +52,7 @@ link_dotfiles() {
     # Reset IFS back
     IFS=$OIFS
 
-    [[ $? ]] && _success "dotfiles updated"
+    [[ $? ]] && _success "All files have been copied"
   fi
 }
 
