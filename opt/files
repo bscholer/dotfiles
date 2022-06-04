@@ -1,4 +1,3 @@
-configs/.gitconfig .gitconfig
-configs/.gitignore .gitignore
-configs/.bash_profile .bash_profile
 configs/.vimrc .vimrc
+configs/.zshrc .zshrc
+configs/.p10k.zsh .p10k.zsh
