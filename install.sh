@@ -11,7 +11,7 @@ mkdir -p "${LOG%/*}" && touch "$LOG"
 
 _process() {
   echo "$(date) PROCESSING:  $@" >> $LOG
-  printf "$(tput setaf 6) %s...$(tput sgr0)\n" "$@"
+  printf "$(tput setaf 6)%s...$(tput sgr0)\n" "$@"
 }
 
 _success() {
@@ -25,6 +25,7 @@ _warning() {
 }
 
 _finish() {
+  echo ""
   echo "🎉 Installation complete! Enjoy the terminal! 🎉"
 }
 
@@ -98,6 +99,7 @@ install_zsh_plugins() {
   else
     git clone --quiet --depth=1 https://github.com/zsh-users/zsh-history-substring-search ~/.config/ezsh/oh-my-zsh/custom/plugins/zsh-history-substring-search
   fi
+
   _success "Installed zsh plugins"
 }
 
@@ -107,7 +109,7 @@ install_colorls() {
 }
 
 install_fonts() {
-  _process "→ Installing Nerd Fonts 🤓"
+  _process "→ Installing Nerd Fonts 🤓 "
 
   _process "  → Installing Hack"
   wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
@@ -117,7 +119,7 @@ install_fonts() {
   wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
 
   fc-cache -fv ~/.fonts > /dev/null
-  _success "Installed Nerd Fonts"
+  _success "Installed Nerd Fonts 🤓 "
 }
 
 install_powerlevel10k() {
@@ -127,10 +129,11 @@ install_powerlevel10k() {
   else
     git clone --quiet --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
   fi
+  _success "Installed ⚡ powerlevel10k"
 }
 
 install_node() {
-  _process "→ Installing node"
+  _process "→ Installing node stuff"
   if ! command -v nvm &> /dev/null; then
     _process "  → Installing nvm"
     curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh &> /dev/null | bash &> /dev/null
@@ -142,12 +145,12 @@ install_node() {
     _process "  → Installing yarn"
     npm install --quiet -g yarn &> /dev/null
 
-    [[ $? ]] && _success "Installed nvm, node, and npm"
+    [[ $? ]] && _success "Installed node stuff"
   fi
 }
 
 install_vim_plugins() {
-  _process "→ Installing vim plugins (this may take some time)"
+  _process "→ Configuring vim plugins (this may take some time)"
   _process "  → Installing vundle"
   git clone --quiet https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
@@ -161,30 +164,11 @@ install_vim_plugins() {
 }
 
 setup_git_authorship() {
-  GIT_AUTHOR_NAME=$(git config --global user.name)
-  GIT_AUTHOR_EMAIL=$(git config --global user.email)
+  _process "→ Setting up Git author"
+  git config --global user.email "$USER_GIT_AUTHOR_EMAIL"
+  git config --global user.name "$USER_GIT_AUTHOR_NAME"
 
-  if [[ ! -z "$GIT_AUTHOR_NAME" ]]; then
-    _process "→ Setting up Git author"
-
-    read USER_GIT_AUTHOR_NAME
-    if [[ ! -z "$USER_GIT_AUTHOR_NAME" ]]; then
-      GIT_AUTHOR_NAME="${USER_GIT_AUTHOR_NAME}"
-      $(git config --global user.name "$GIT_AUTHOR_NAME")
-    else
-      _warning "No Git user name has been set.  Please update manually"
-    fi
-
-    read USER_GIT_AUTHOR_EMAIL
-    if [[ ! -z "$USER_GIT_AUTHOR_EMAIL" ]]; then
-      GIT_AUTHOR_EMAIL="${USER_GIT_AUTHOR_EMAIL}"
-      $(git config --global user.email "$GIT_AUTHOR_EMAIL")
-    else
-      _warning "No Git user email has been set.  Please update manually"
-    fi
-  else
-    _process "→ Git author already set, moving on..."
-  fi
+  [[ $? ]] && _success "Set Git author"
 }
 
 generate_ssh_key() {
@@ -195,16 +179,16 @@ generate_ssh_key() {
     _process "  → Generating SSH keys"
     ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "${USER_GIT_AUTHOR_EMAIL}" -q -N ""
   else
-    _process "  → SSH key already exists"
+    echo -e "  → SSH key already exists"
   fi
 
-  _process "  → Start ssh-agent"
+  _process "  → Starting ssh-agent"
   eval "$(ssh-agent -s)" > /dev/null
 
-  _process "  → Add SSH key to ssh-agent"
+  _process "  → Adding SSH key to ssh-agent"
   ssh-add ~/.ssh/id_ed25519 &> /dev/null
 
-  printf "\r\nCopy and add the following SSH key to GitHub (https://github.com/settings/keys):"
+  printf "\r\nCopy and add the following SSH key to GitHub (https://github.com/settings/keys):\r\n"
   cat ~/.ssh/id_ed25519.pub
 
   echo ""
