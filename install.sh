@@ -10,8 +10,8 @@ PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "font
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
 _process() {
-    echo "$(date) PROCESSING:  $@" >> $LOG
-    printf "$(tput setaf 6) %s...$(tput sgr0)\n" "$@"
+  echo "$(date) PROCESSING:  $@" >> $LOG
+  printf "$(tput setaf 6) %s...$(tput sgr0)\n" "$@"
 }
 
 _success() {
@@ -19,30 +19,38 @@ _success() {
   printf "%s✓ Success:%s\n" "$(tput setaf 2)" "$(tput sgr0) $message"
 }
 
+_warning() {
+  echo "$(date) WARNING:  $@" >> $LOG
+  printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
+}
+
+_finish() {
+  echo "🎉 Installation complete! Enjoy the terminal! 🎉"
+}
+
 install_curl_wget() {
   _process "→ Installing curl and wget" 
   if sudo apt-get install -y curl wget > /dev/null || sudo pacman -S curl wget > /dev/null || sudo dnf install -y curl wget > /dev/null || sudo yum install -y curl wget > /dev/null || sudo brew install curl wget > /dev/null || pkg install curl wget > /dev/null ; then
     _success "Installed curl and wget"
   else
-    echo -e "Please install the following packages first, then try again: curl wget \n" && exit
+    _warning "Please install the following packages first, then try again: curl wget \n" && exit
   fi
 }
 
 install_zsh_git() {
   if command -v apt-get &> /dev/null; then
-    _process "→ Updating apt"
+    _process "→ Updating packages"
     sudo apt-get update > /dev/null && sudo apt-get upgrade -y > /dev/null
   fi
   if command -v dnf &> /dev/null; then
-    _process "→ Updating dnf"
+    _process "→ Updating packages"
     sudo dnf update > /dev/null 
   fi
 
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
-    echo -e "${PROGRAMS[@]}"
     _success "Installed ${PROGRAMS[@]}"
   else
-    echo -e "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
+    _warning "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
   fi
 }
 
@@ -99,7 +107,7 @@ install_colorls() {
 }
 
 install_fonts() {
-  _process "→ Installing Nerd Fonts version of Hack, Roboto Mono, DejaVu Sans Mono"
+  _process "→ Installing 🤓 Nerd Fonts version of Hack, Roboto Mono, DejaVu Sans Mono"
 
   wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
   wget -q --show-progress -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/RobotoMono/Regular/complete/Roboto%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
@@ -110,7 +118,7 @@ install_fonts() {
 }
 
 install_powerlevel10k() {
-  _process "→ Installing powerlevel10k"
+  _process "→ Installing ⚡ powerlevel10k"
   if [ -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]; then
     cd ~/.oh-my-zsh/custom/themes/powerlevel10k && git pull --quiet
   else
@@ -119,19 +127,39 @@ install_powerlevel10k() {
 }
 
 install_node() {
-  if ! type -P 'npm' &> /dev/null; then
-    _process "→ Installing node"
+  _process "→ Installing node"
+  if ! command -v nvm &> /dev/null; then
+    _process "  → Installing nvm"
+    curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh | bash > /dev/null
+    source ~/.nvm/nvm.sh > /dev/null
 
-    curl https://www.npmjs.org/install.sh | sh
+    _process "  → Installing node"
+    nvm install node > /dev/null
 
-    [[ $? ]] \
-    && _success "Installed node and npm"
+    _process "  → Installing yarn"
+    npm install --quiet -g yarn
+
+    [[ $? ]] && _success "Installed nvm, node, and npm"
   fi
 }
 
+install_vim_plugins() {
+  _process "→ Installing vim plugins"
+  _process "  → Installing vundle"
+  git clone --quiet https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+  _process "  → Installing vim plugins"
+  vim +PluginInstall +qall &> /dev/null
+
+  _process "  → Installing CoC.vim"
+  cd ~/.vim/bundle/coc.nvim && yarn install --silent && yarn build --silent
+
+  [[ $? ]] && _success "Installed vim plugins"
+}
+
 setup_git_authorship() {
-  GIT_AUTHOR_NAME=eval "git config user.name"
-  GIT_AUTHOR_EMAIL=eval "git config user.email"
+  GIT_AUTHOR_NAME=eval "git config --global user.name"
+  GIT_AUTHOR_EMAIL=eval "git config --global user.email"
 
   if [[ ! -z "$GIT_AUTHOR_NAME" ]]; then
     _process "→ Setting up Git author"
@@ -156,73 +184,100 @@ setup_git_authorship() {
   fi
 }
 
+generate_ssh_key() {
+  _process "→ Seting up SSH keys"
+
+  if [ ! -f "~/.ssh/id_ed25519.pub" ]; then
+    _process "  → Generating SSH keys"
+    ssh-keygen -t ed25519 -f ~/.ssh -C "$1" -q -N ""
+  else
+    _process "  → SSH key already exists"
+  fi
+
+  _process "  → Start ssh-agent"
+  eval "$(ssh-agent -s)"
+
+  _process "  → Add SSH key to ssh-agent"
+  ssh-add ~/.ssh/id_ed25519
+
+  _warning "Copy and add the following SSH key to GitHub:"
+  cat ~/.ssh/id_ed25519.pub
+
+  echo "https://github.com/settings/keys"
+}
+
 download_dotfiles() {
-    _process "→ Cloining repository"
-    git clone --quiet https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
+  _process "→ Installing dotfiles"
 
-    # Change to the dotfiles directory
-    cd "${DIR}"
+  _process "  → Cloining repository"
+  git clone --quiet https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
 
-    _process "→ Switching remote to SSH"
-    git remote set-url origin git@github.com:${GITHUB_USER}/${GITHUB_REPO}.git
+  # Change to the dotfiles directory
+  cd "${DIR}"
 
-    [[ $? ]] && _success "Repository downloaded"
+  _process "  → Switching remote to SSH"
+  git remote set-url origin git@github.com:${GITHUB_USER}/${GITHUB_REPO}.git
+
+  [[ $? ]] && _success "Repository downloaded"
 }
 
 link_dotfiles() {
-    # symlink files to the HOME directory.
-    if [[ -f "${DIR}/opt/files" ]]; then
-        _process "→ Symlinking dotfiles in /configs"
+  # symlink files to the HOME directory.
+  if [[ -f "${DIR}/opt/files" ]]; then
+    _process "→ Symlinking dotfiles in /configs"
 
-        # Set variable for list of files
-        files="${DIR}/opt/files"
+    # Set variable for list of files
+    files="${DIR}/opt/files"
 
-        # Store IFS separator within a temp variable
-        OIFS=$IFS
-        # Set the separator to a carriage return & a new line break
-        # read in passed-in file and store as an array
-        IFS=$'\r\n'
-        links=($(cat "${files}"))
+    # Store IFS separator within a temp variable
+    OIFS=$IFS
+    # Set the separator to a carriage return & a new line break
+    # read in passed-in file and store as an array
+    IFS=$'\r\n'
+    links=($(cat "${files}"))
 
-        # Loop through array of files
-        for index in ${!links[*]}
-        do
-            for link in ${links[$index]}
-            do
-                _process "→ Linking ${links[$index]}"
-                # set IFS back to space to split string on
-                IFS=$' '
-                # create an array of line items
-                file=(${links[$index]})
-                # Create symbolic link
-                ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
-            done
-            # set separater back to carriage return & new line break
-            IFS=$'\r\n'
-        done
+    # Loop through array of files
+    for index in ${!links[*]}
+    do
+      for link in ${links[$index]}
+      do
+	_process "→ Linking ${links[$index]}"
+	# set IFS back to space to split string on
+	IFS=$' '
+	# create an array of line items
+	file=(${links[$index]})
+	# Create symbolic link
+	ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
+      done
+      # set separater back to carriage return & new line break
+      IFS=$'\r\n'
+    done
 
-        # Reset IFS back
-        IFS=$OIFS
+    # Reset IFS back
+    IFS=$OIFS
 
-        source "${HOME}/.bash_profile"
-        [[ $? ]] && _success "All files have been copied"
-    fi
+    [[ $? ]] && _success "All files have been copied"
+  fi
 }
 
 set_default_shell() {
+  _process "Changing shell to zsh"
   if command -v chsh &> /dev/null; then
     if chsh -s $(which zsh); then
       _success "Changed shell"
     else
-      echo -e "Something is wrong"
+      _warning "Something went wrong changing shells"
     fi
   else
     echo "zsh" >> ~/.bashrc
-    echo -e "chsh not found, appending to ~/.bashrc"
+    _warning "chsh not found, appending to ~/.bashrc"
   fi
 }
 
+
 install() {
+  read -p "Enter github email : " email
+  echo "Using email $email"
   install_curl_wget
   install_zsh_git
   install_ohmyzsh
@@ -237,11 +292,17 @@ install() {
   download_dotfiles
   link_dotfiles
 
+  install_vim_plugins
+
   #install_crontab
-  #install_vim_plugins
   setup_git_authorship
-  #generate_ssh_key
+  generate_ssh_key "${email}"
   set_default_shell
+
+  _finish
+
+  cd ~
+  zsh
 }
 
 install
