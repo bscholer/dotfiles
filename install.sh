@@ -196,7 +196,7 @@ download_dotfiles() {
   _process "→ Installing dotfiles"
 
   _process "  → Cloining repository"
-  git clone --quiet https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
+  sudo git clone --quiet https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
 
   _process "  → Setting update script permissions"
   sudo chmod +x "${DIR}/update.sh"
