@@ -35,6 +35,7 @@ call vundle#begin()
 " Plugins
 Plugin 'VundleVim/Vundle.vim'
 Plugin 'preservim/nerdtree'
+Plugin 'xuyuanp/nerdtree-git-plugin'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'neoclide/coc.nvim'
@@ -52,7 +53,6 @@ filetype plugin indent on
 
 let g:rainbow_active = 1
 let g:airline_powerline_fonts = 1
-
 
 
 " CoC Tab completion
