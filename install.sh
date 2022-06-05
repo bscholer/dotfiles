@@ -5,7 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
 DIR="/usr/local/opt/${GITHUB_REPO}"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig" "htop") # passwd, which provides chsh intentionally left out
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig" "htop" "curl" "wget") # passwd, which provides chsh intentionally left out
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
@@ -29,23 +29,14 @@ _finish() {
   echo "🎉 Installation complete! Enjoy the terminal! 🎉"
 }
 
-install_curl_wget() {
-  _process "→ Installing curl and wget" 
-  if sudo apt-get install -y curl wget > /dev/null || sudo pacman -S curl wget > /dev/null || sudo dnf install -y curl wget > /dev/null || sudo yum install -y curl wget > /dev/null || sudo brew install curl wget > /dev/null || pkg install curl wget > /dev/null ; then
-    _success "Installed curl and wget"
-  else
-    _warning "Please install the following packages first, then try again: curl wget \n" && exit
-  fi
-}
-
-install_zsh_git() {
+install_programs() {
   if command -v apt-get &> /dev/null; then
     _process "→ Updating packages"
-    sudo apt-get update > /dev/null && sudo apt-get upgrade -y > /dev/null
+    sudo apt-get update &> /dev/null && sudo apt-get upgrade -y &> /dev/null
   fi
   if command -v dnf &> /dev/null; then
     _process "→ Updating packages"
-    sudo dnf update > /dev/null 
+    sudo dnf update &> /dev/null 
   fi
 
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
@@ -147,7 +138,7 @@ install_node() {
     source ~/.nvm/nvm.sh &> /dev/null
 
     _process "  → Installing node"
-    nvm install node > /dev/null
+    nvm install node &> /dev/null
 
     _process "  → Installing yarn"
     npm install --quiet -g yarn &> /dev/null
@@ -274,8 +265,7 @@ set_default_shell() {
 
 
 install() {
-  install_curl_wget
-  install_zsh_git
+  install_programs
   install_ohmyzsh
   install_zsh_plugins
 

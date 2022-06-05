@@ -50,6 +50,7 @@ Plugin 'enricobacis/vim-airline-clock'
 Plugin 'felipec/notmuch-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'frazrepo/vim-rainbow'
+Plugin 'jiangmiao/auto-pairs'
 
 call vundle#end()
 
