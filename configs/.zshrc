@@ -20,7 +20,7 @@ EDITOR='vim'
 
 DISABLE_UPDATE_PROMPT="true"
 
-plugins=(git z zsh-autosuggestions zsh-syntax-highlighting history-substring-search extract catimg docker aws)
+plugins=(git z zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search zsh-completions extract catimg docker aws)
 
 unsetopt complete_aliases
 

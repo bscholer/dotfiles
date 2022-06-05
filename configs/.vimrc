@@ -16,6 +16,7 @@ set nostartofline
 set confirm
 set noswapfile
 set undolevels=1000
+set shiftwidth=2
 syntax on
 filetype indent on
 filetype plugin indent on
@@ -25,13 +26,6 @@ let g:typescript_indent_disable = 1
 
 " Maps
 imap jj <Esc>
-
-" Closing delimiters
-inoremap ( ()<Left>
-inoremap [ []<Left>
-inoremap { {}<Left>
-" Puts closing delim on next line
-inoremap <expr> <CR> search('{\%#}', 'n') ? "\<CR>\<CR>\<Up>\<C-f>" : "\<CR>" 
 
 " Vundle stuff
 set rtp+=~/.vim/bundle/Vundle.vim
@@ -57,6 +51,9 @@ call vundle#end()
 filetype plugin indent on
 
 let g:rainbow_active = 1
+let g:airline_powerline_fonts = 1
+
+
 
 " CoC Tab completion
 inoremap <silent><expr> <TAB>
@@ -92,3 +89,5 @@ endif
 " vim-airline-clock
 let g:airline#extensions#clock#format = '%H:%M:%S'
 let g:airline#extensions#clock#updatetime = 1000
+
+
