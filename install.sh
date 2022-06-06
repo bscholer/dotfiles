@@ -216,11 +216,6 @@ download_dotfiles() {
   else
     git clone --quiet --depth=1 https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
   fi
-  #sudo mkdir -p "${DIR}"
-  #sudo git clone --quiet  "${DIR}"
-
-  _process "  → Setting update script permissions"
-  sudo chmod +x "${DIR}/update.sh"
 
   # Change to the dotfiles directory
   cd "${DIR}"
