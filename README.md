@@ -7,7 +7,7 @@ This repo started life as [gjunkie's dotfiles-starter-kit](https://github.com/gj
 ## Install
 
 ```bash
-bash -c "$(wget https://raw.github.com/bscholer/dotfiles/master/install.sh -O -)"
+bash -c "$(wget --quiet https://raw.github.com/bscholer/dotfiles/master/install.sh -O -)"
 ```
 
 ## What it does
