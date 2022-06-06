@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-LOG="${HOME}/.dotfiles/dotfiles.log"
+LOG="${HOME}/logs/dotfile-installer.log"
 GITHUB_USER="bscholer"
 GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
