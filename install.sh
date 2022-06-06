@@ -40,17 +40,18 @@ _finish() {
 }
 
 install_programs() {
+  _process "→ Updating and Installing programs"
   if command -v apt-get &> /dev/null; then
-    _process "→ Updating packages"
+    _process "  → Updating"
     sudo apt-get update &> /dev/null && sudo apt-get upgrade -y &> /dev/null
   fi
   if command -v dnf &> /dev/null; then
-    _process "→ Updating packages"
+    _process "  → Updating"
     sudo dnf update &> /dev/null 
   fi
 
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
-    _success "Installed ${PROGRAMS[@]}"
+    _success "Installed: ${PROGRAMS[@]}"
   else
     _warning "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
   fi
@@ -58,13 +59,11 @@ install_programs() {
 
 install_ohmyzsh() {
   _process "→ Installing oh-my-zsh"
-  if [ ! -d ~/.oh-my-zsh ]; then
-    git clone --quiet --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
-  fi
-
-  # check it got installed
   if [ -d ~/.oh-my-zsh ]; then
-    _success "Installed oh-my-zsh"
+    _success "oh-my-zsh already installed"
+  else
+    git clone --quiet --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
+    [[ $? ]] && _success "Installed oh-my-zsh"
   fi
 }
 
@@ -118,17 +117,18 @@ install_fonts() {
   wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/DejaVuSansMono/Regular/complete/DejaVu%20Sans%20Mono%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
 
   fc-cache -fv ~/.fonts > /dev/null
-  _success "Installed Nerd Fonts 🤓 "
+  [[ $? ]] && _success "Installed Nerd Fonts 🤓 "
 }
 
 install_powerlevel10k() {
   _process "→ Installing ⚡ powerlevel10k"
-  if [ -d ~/.oh-my-zsh/custom/themes/powerlevel10k ]; then
+  if [ -d ~/.oh-my-zsh/custom/themes/powerlevel10k ] && [ -d ~/powerlevel10k ]; then
     cd ~/.oh-my-zsh/custom/themes/powerlevel10k && git pull --quiet
+    [[ $? ]] && _success "Updated ⚡ powerlevel10k"
   else
     git clone --quiet --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+    [[ $? ]] && _success "Installed ⚡ powerlevel10k"
   fi
-  _success "Installed ⚡ powerlevel10k"
 }
 
 install_node() {
