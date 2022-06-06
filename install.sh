@@ -123,7 +123,7 @@ install_fonts() {
 install_powerlevel10k() {
   _process "→ Installing ⚡ powerlevel10k"
   if [ -d ~/.oh-my-zsh/custom/themes/powerlevel10k ] && [ -d ~/powerlevel10k ]; then
-    cd ~/.oh-my-zsh/custom/themes/powerlevel10k && git pull --quiet
+    cd ~/powerlevel10k && git pull --quiet
     [[ $? ]] && _success "Updated ⚡ powerlevel10k"
   else
     git clone --quiet --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
