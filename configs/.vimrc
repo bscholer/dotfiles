@@ -38,14 +38,15 @@ Plugin 'preservim/nerdtree'
 Plugin 'xuyuanp/nerdtree-git-plugin'
 Plugin 'vim-airline/vim-airline'
 Plugin 'vim-airline/vim-airline-themes'
+Plugin 'enricobacis/vim-airline-clock'
 Plugin 'neoclide/coc.nvim'
 Plugin 'leafgarland/typescript-vim'
 Plugin 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plugin 'enricobacis/vim-airline-clock'
 Plugin 'felipec/notmuch-vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'frazrepo/vim-rainbow'
 Plugin 'jiangmiao/auto-pairs'
+Plugin 'ryanoasis/vim-devicons'
 
 call vundle#end()
 

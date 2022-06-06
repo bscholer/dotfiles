@@ -45,6 +45,7 @@ function lazygit() {             # A function to add, commit, and push all at on
 }
 
 alias lg='lazygit'               # Because I'm really lazy
+alias g='git'                    # git is too long
 
 alias rm='trash'                 # Remove using sudo and opions -r and -f
 alias i="sudo apt install"       # Install a package
