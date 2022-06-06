@@ -9,6 +9,16 @@ PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "font
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
+_intro() {
+  echo "🐧 ******** bscholer terminal setup script ******** 🐧"
+  echo ""
+}
+
+_info() {
+  echo "$(date) INFO:  $@" >> $LOG
+  printf "$(tput setaf 4)%s...$(tput sgr0)\n" "$@"
+}
+
 _process() {
   echo "$(date) PROCESSING:  $@" >> $LOG
   printf "$(tput setaf 6)%s...$(tput sgr0)\n" "$@"
@@ -16,7 +26,7 @@ _process() {
 
 _success() {
   local message=$@
-  printf "%s✓ Success:%s\n" "$(tput setaf 2)" "$(tput sgr0) $message"
+  printf "%s✓ Success: %s%s\n" "$(tput setaf 2)" "$message" "$(tput sgr0)"
 }
 
 _warning() {
@@ -48,13 +58,11 @@ install_programs() {
 
 install_ohmyzsh() {
   _process "→ Installing oh-my-zsh"
-  if [ -d ~/.oh-my-zsh ]; then
-    _success "Installed oh-my-zsh"
-  else
+  if [ ! -d ~/.oh-my-zsh ]; then
     git clone --quiet --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
   fi
 
-  # double check it got installed
+  # check it got installed
   if [ -d ~/.oh-my-zsh ]; then
     _success "Installed oh-my-zsh"
   fi
@@ -195,7 +203,7 @@ generate_ssh_key() {
 
     echo ""
   else
-    echo -e "  → SSH key already exists"
+    _process "  → SSH key already exists"
   fi
 }
 
@@ -227,6 +235,8 @@ link_dotfiles() {
   # symlink files to the HOME directory.
   if [[ -f "${DIR}/opt/files" ]]; then
     _process "→ Symlinking dotfiles in /configs"
+    _info "  Backing up existing dotfiles to ${DIR}/backup"
+    mkdir -p "${DIR}/backup"
 
     # Set variable for list of files
     files="${DIR}/opt/files"
@@ -248,6 +258,8 @@ link_dotfiles() {
 	IFS=$' '
 	# create an array of line items
 	file=(${links[$index]})
+	# bakcup
+	cp -L "${HOME}/${file[1]}" "${DIR}/backup/${file[1]}"
 	# Create symbolic link
 	ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
       done
@@ -263,21 +275,27 @@ link_dotfiles() {
 }
 
 set_default_shell() {
-  _process "→ Changing shell to zsh"
-  if [[ $SHELL != *"zsh"* ]] || command -v chsh &> /dev/null; then
-    if chsh -s $(which zsh); then
-      _success "Changed shell"
+  _process "→ Checking default shell"
+  if [[ $SHELL != *"zsh" ]]; then
+    if command -v chsh &> /dev/null; then
+      if chsh -s $(which zsh); then
+	_success "Changed shell"
+      else
+	_warning "Something went wrong changing shells"
+      fi
     else
-      _warning "Something went wrong changing shells"
+      echo "zsh" >> ~/.bashrc
+      _warning "chsh not found, appending to ~/.bashrc"
     fi
   else
-    echo "zsh" >> ~/.bashrc
-    _warning "chsh not found, appending to ~/.bashrc"
+    _info "  Default shell already zsh"
   fi
 }
 
 
 install() {
+  _intro
+
   install_programs
   install_ohmyzsh
   install_zsh_plugins
