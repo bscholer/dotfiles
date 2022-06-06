@@ -1,11 +1,12 @@
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
 if [ -d "/usr/local/opt/dotfiles" ]; then
   $(/usr/local/opt/dotfiles/update.sh)
@@ -42,16 +43,14 @@ function lazygit() {             # A function to add, commit, and push all at on
   git commit --quiet -a -m "$1"
   git push --quiet && printf "%s✓ Pushed successfully!%s\n" "$(tput setaf 2)" "$(tput sgr0)"
 }
-#function chpwd() {               # Runs everytime you change directories
-#	clear
-#    ls
-#}
 
-alias rm='trash'                           # Remove using sudo and opions -r and -f
-alias i="sudo apt install"                 # Install a package
-alias v="vim"                              # Open a file in vim
-alias d="sudo docker"
-alias d="sudo docker-compose"
+alias lg='lazygit'               # Because I'm really lazy
+
+alias rm='trash'                 # Remove using sudo and opions -r and -f
+alias i="sudo apt install"       # Install a package
+alias v="vim"                    # Open a file in vim
+alias d="sudo docker"            # Docker
+alias d="sudo docker-compose"    # Docker compose
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
