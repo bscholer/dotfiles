@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-LOG="${HOME}/Library/Logs/dotfiles.log"
+LOG="${HOME}/.dotfiles/dotfiles.log"
 GITHUB_USER="bscholer"
 GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
-DIR="/usr/local/opt/${GITHUB_REPO}"
+DIR="${HOME}/.dotfiles"
 PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig" "htop" "curl" "wget") # passwd, which provides chsh intentionally left out
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
@@ -125,32 +125,39 @@ install_powerlevel10k() {
 
 install_node() {
   _process "→ Installing node stuff"
-  if ! command -v nvm &> /dev/null; then
-    _process "  → Installing nvm"
 
+  _process "  → Installing nvm"
+  if ! command -v nvm &> /dev/null; then
     export NVM_DIR="$HOME/.nvm" && (
-      git clone --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+      [ ! -d "${NVM_DIR}" ] && git clone --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
       cd "$NVM_DIR"
       git checkout --quiet `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
     ) && \. "$NVM_DIR/nvm.sh"
 
-    #curl -s -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.3/install.sh &> /dev/null | bash &> /dev/null
     source ~/.nvm/nvm.sh &> /dev/null
-
+  fi
+  
+  if ! command -v node &> /dev/null; then
     _process "  → Installing node"
     nvm install node &> /dev/null
+  fi
 
+  if ! command -v yarn &> /dev/null; then
     _process "  → Installing yarn"
     npm install --quiet -g yarn &> /dev/null
-
-    [[ $? ]] && _success "Installed node stuff"
   fi
+
+  _success "Installed node stuff"
 }
 
 install_vim_plugins() {
   _process "→ Configuring vim plugins (this may take some time)"
   _process "  → Installing vundle"
-  git clone --quiet https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  if [ -d ~/.vim/bundle/Vundle.vim ]; then
+    cd ~/.vim/bundle/Vundle.vim && git pull --quiet
+  else
+    git clone --quiet --depth=1 https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+  fi
 
   _process "  → Installing vim plugins"
   vim +PluginInstall +qall &> /dev/null
@@ -173,31 +180,36 @@ generate_ssh_key() {
   _process "→ Seting up SSH keys"
   mkdir -p ~/.ssh
 
-  if [ ! -f "~/.ssh/id_ed25519.pub" ]; then
+  if [ ! -f ~/.ssh/id_ed25519.pub ]; then
     _process "  → Generating SSH keys"
     ssh-keygen -t ed25519 -f ~/.ssh/id_ed25519 -C "${USER_GIT_AUTHOR_EMAIL}" -q -N ""
+
+    _process "  → Starting ssh-agent"
+    eval "$(ssh-agent -s)" > /dev/null
+
+    _process "  → Adding SSH key to ssh-agent"
+    ssh-add ~/.ssh/id_ed25519 &> /dev/null
+
+    printf "\r\nCopy and add the following SSH key to GitHub (https://github.com/settings/keys):\r\n"
+    cat ~/.ssh/id_ed25519.pub
+
+    echo ""
   else
     echo -e "  → SSH key already exists"
   fi
-
-  _process "  → Starting ssh-agent"
-  eval "$(ssh-agent -s)" > /dev/null
-
-  _process "  → Adding SSH key to ssh-agent"
-  ssh-add ~/.ssh/id_ed25519 &> /dev/null
-
-  printf "\r\nCopy and add the following SSH key to GitHub (https://github.com/settings/keys):\r\n"
-  cat ~/.ssh/id_ed25519.pub
-
-  echo ""
 }
 
 download_dotfiles() {
   _process "→ Installing dotfiles"
 
   _process "  → Cloining repository"
-  sudo mkdir -p "${DIR}"
-  sudo git clone --quiet https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
+  if [ -d "${DIR}" ]; then
+    cd "${DIR}" && git pull --quiet
+  else
+    git clone --quiet --depth=1 https://github.com/${GITHUB_USER}/${GITHUB_REPO}.git "${DIR}"
+  fi
+  #sudo mkdir -p "${DIR}"
+  #sudo git clone --quiet  "${DIR}"
 
   _process "  → Setting update script permissions"
   sudo chmod +x "${DIR}/update.sh"
@@ -252,7 +264,7 @@ link_dotfiles() {
 
 set_default_shell() {
   _process "→ Changing shell to zsh"
-  if command -v chsh &> /dev/null; then
+  if [[ $SHELL != *"zsh"* ]] || command -v chsh &> /dev/null; then
     if chsh -s $(which zsh); then
       _success "Changed shell"
     else
