@@ -1,0 +1,11 @@
+nnoremap <SPACE> <Nop>
+let mapleader=" "
+imap jj <Esc>
+nnoremap yy "+yy
+vnoremap y "+y
+
+nnoremap p "+p
+vnoremap p "+p
+nnoremap P "+P
+vnoremap P "+P
+nnoremap <leader>u /\u/s+<cr>

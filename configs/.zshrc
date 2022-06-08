@@ -77,3 +77,8 @@ if [ -x "$(command -v colorls)" ]; then
   alias ls="colorls --almost-all"
   alias la="colorls -al"
 fi
+
+# Load in some local settings if they exist
+if [ -f ~/.zshrc-local ]; then
+  source ~/.zshrc-local
+fi
