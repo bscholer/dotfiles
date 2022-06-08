@@ -24,6 +24,7 @@ imap jj <Esc>
 let mapleader = " " " map leader to comma
 nmap <leader>o o<Esc>k
 nmap <leader>O O<Esc>j
+nnoremap <leader>s :ToggleWorkspace<CR>
 
 
 " -------- Plugins --------
@@ -32,6 +33,7 @@ call vundle#begin()
   Plugin 'VundleVim/Vundle.vim'
   Plugin 'preservim/nerdtree'
   Plugin 'xuyuanp/nerdtree-git-plugin'
+  Plugin 'tiagofumo/vim-nerdtree-syntax-highlight'
   Plugin 'vim-airline/vim-airline'
   Plugin 'vim-airline/vim-airline-themes'
   Plugin 'enricobacis/vim-airline-clock'
@@ -43,6 +45,7 @@ call vundle#begin()
   Plugin 'frazrepo/vim-rainbow'
   Plugin 'jiangmiao/auto-pairs'
   Plugin 'ryanoasis/vim-devicons'
+  Plugin 'thaerkh/vim-workspace'
 call vundle#end()
 
 
@@ -52,6 +55,8 @@ let g:airline_powerline_fonts = 1   " Enable powerline fonts
 let g:typescript_indent_disable = 1 " Disable typescript-vim indent
 let g:airline#extensions#clock#format = '%H:%M:%S'
 let g:airline#extensions#clock#updatetime = 1000
+let g:workspace_autocreate = 1
+let g:workspace_autosave_always = 1
 
 
 " -------- CoC config --------
@@ -80,9 +85,9 @@ nmap <leader>f  <Plug>(coc-format-selected)
 
 " -------- NERDTree config --------
 " Start NERDTree automatically. If a file is specified, move the cursor to its window.
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
-let NERDTreeShowHidden=1
+"autocmd StdinReadPre * let s:std_in=1
+"autocmd VimEnter * NERDTree | if argc() > 0 || exists("s:std_in") | wincmd p | endif
+"let NERDTreeShowHidden=1
 
 " Close NERDTree if it is the last window open
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif

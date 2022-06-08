@@ -37,6 +37,13 @@ alias vrc='vim ~/.vimrc'         # Open ~/.vimrc for editing
 alias src='source ~/.zshrc'      # Source ~/.zshrc
 alias open='xdg-open'            # Open a file using xdg-open
 
+# Spotify
+alias sp='spt'
+alias spl='spt playback --like'
+alias spn='spt playback --next'
+alias spp='spt playback --previous'
+
+
 # Git aliases
 function lazygit() {             # A function to add, commit, and push all at once.
   git add .
@@ -67,6 +74,6 @@ export NVM_DIR="$HOME/.nvm"
 
 # colors!!
 if [ -x "$(command -v colorls)" ]; then
-    alias ls="colorls --almost-all"
-    alias la="colorls -al"
+  alias ls="colorls --almost-all"
+  alias la="colorls -al"
 fi
