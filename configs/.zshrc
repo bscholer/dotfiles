@@ -58,7 +58,7 @@ alias rm='trash'                 # Remove using sudo and opions -r and -f
 alias i="sudo apt install"       # Install a package
 alias v="vim"                    # Open a file in vim
 alias d="sudo docker"            # Docker
-alias d="sudo docker-compose"    # Docker compose
+alias dc="sudo docker-compose"   # Docker compose
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
