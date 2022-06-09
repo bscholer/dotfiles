@@ -5,7 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
 DIR="${HOME}/.dotfiles"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby-full" "build-essential" "fontconfig" "htop" "curl" "wget") # passwd, which provides chsh intentionally left out
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget") # passwd, which provides chsh intentionally left out
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
