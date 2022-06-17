@@ -10,4 +10,4 @@ WORKDIR /root
 
 COPY install.sh ./
 
-RUN install.sh
+RUN ./install.sh
