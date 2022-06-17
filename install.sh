@@ -40,15 +40,15 @@ _finish() {
 }
 
 install_programs() {
-  _process "→ Updating and Installing programs"
-  if command -v apt-get &> /dev/null; then
-    _process "  → Updating"
-    sudo apt-get update &> /dev/null && sudo apt-get upgrade -y &> /dev/null
-  fi
-  if command -v dnf &> /dev/null; then
-    _process "  → Updating"
-    sudo dnf update &> /dev/null 
-  fi
+#  _process "→ Updating and Installing programs"
+#   if command -v apt-get &> /dev/null; then
+#     _process "  → Updating"
+#     sudo apt-get update &> /dev/null && sudo apt-get upgrade -y &> /dev/null
+#   fi
+#   if command -v dnf &> /dev/null; then
+#     _process "  → Updating"
+#     sudo dnf update &> /dev/null 
+#   fi
 
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
     _success "Installed: ${PROGRAMS[@]}"
