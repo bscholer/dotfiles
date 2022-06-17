@@ -9,3 +9,5 @@ RUN apt-get update -y && apt-get upgrade -y
 WORKDIR /root
 
 COPY install.sh ./
+
+RUN install.sh
