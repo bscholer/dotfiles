@@ -49,7 +49,7 @@ install_programs() {
 #     _process "  → Updating"
 #     sudo dnf update &> /dev/null 
 #   fi
-
+  _process "→ Installing dependencies (${PROGRAMS})"
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
     _success "Installed: ${PROGRAMS[@]}"
   else
