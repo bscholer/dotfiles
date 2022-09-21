@@ -6,6 +6,15 @@ USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
 DIR="${HOME}/.dotfiles"
 PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby" "fontconfig" "htop" "curl" "wget") # passwd, which provides chsh intentionally left out
+INSTALL_NODE=true
+
+for var in "$@"
+do
+  if [ "$var" = "--no-node" ]; then
+    INSTALL_NODE=false
+    _info "Skipping Node Installation"
+  fi
+done
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
@@ -49,7 +58,7 @@ install_programs() {
 #     _process "  → Updating"
 #     sudo dnf update &> /dev/null 
 #   fi
-
+  _process "→ Installing dependencies"
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
     _success "Installed: ${PROGRAMS[@]}"
   else
@@ -132,27 +141,31 @@ install_powerlevel10k() {
 }
 
 install_node() {
-  _process "→ Installing node stuff"
+  if [ "$INSTALL_NODE" = false ]; then
+    _process "→ I"
+    return 0;
+  else
+    _process "→ Installing node stuff"
+  fi
 
   _process "  → Installing nvm"
-  if ! command -v nvm &> /dev/null; then
+  if ! command -v nvm > /dev/null; then
     export NVM_DIR="$HOME/.nvm" && (
       [ ! -d "${NVM_DIR}" ] && git clone --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
       cd "$NVM_DIR"
       git checkout --quiet `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
     ) && \. "$NVM_DIR/nvm.sh"
 
-    source ~/.nvm/nvm.sh &> /dev/null
+    source ~/.nvm/nvm.sh > /dev/null
   fi
   
-  if ! command -v node &> /dev/null; then
+  if ! command -v node > /dev/null; then
     _process "  → Installing node"
-    nvm install node &> /dev/null
+    nvm install node > /dev/null
   fi
 
-  if ! command -v yarn &> /dev/null; then
-    _process "  → Installing yarn"
-    npm install --quiet -g yarn &> /dev/null
+  if ! command -v yarn > /dev/null; then _process "  → Installing yarn"
+    npm install --quiet -g yarn > /dev/null
   fi
 
   _success "Installed node stuff"
@@ -168,10 +181,10 @@ install_vim_plugins() {
   fi
 
   _process "  → Installing vim plugins"
-  vim +PluginInstall +qall &> /dev/null
+  vim +PluginInstall +qall > /dev/null
 
   _process "  → Installing CoC.vim"
-  cd ~/.vim/bundle/coc.nvim && yarn install --silent &> /dev/null && yarn build --silent &> /dev/null
+  cd ~/.vim/bundle/coc.nvim && yarn install --silent > /dev/null && yarn build --silent > /dev/null
 
   [[ $? ]] && _success "Installed vim plugins"
 }
@@ -196,7 +209,7 @@ generate_ssh_key() {
     eval "$(ssh-agent -s)" > /dev/null
 
     _process "  → Adding SSH key to ssh-agent"
-    ssh-add ~/.ssh/id_ed25519 &> /dev/null
+    ssh-add ~/.ssh/id_ed25519 > /dev/null
 
     printf "\r\nCopy and add the following SSH key to GitHub (https://github.com/settings/keys):\r\n"
     cat ~/.ssh/id_ed25519.pub
@@ -272,7 +285,7 @@ link_dotfiles() {
 set_default_shell() {
   _process "→ Checking default shell"
   if [[ $SHELL != *"zsh" ]]; then
-    if command -v chsh &> /dev/null; then
+    if command -v chsh > /dev/null; then
       if chsh -s $(which zsh); then
 	_success "Changed shell"
       else
