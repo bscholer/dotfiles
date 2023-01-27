@@ -46,6 +46,7 @@ alias spp='spt playback --previous'
 
 # Git aliases
 function lazygit() {             # A function to add, commit, and push all at once.
+  git pull
   git add .
   git commit --quiet -a -m "$1"
   git push --quiet && printf "%s✓ Pushed successfully!%s\n" "$(tput setaf 2)" "$(tput sgr0)"
