@@ -1,3 +1,5 @@
-configs/.vimrc .vimrc
 configs/.zshrc .zshrc
 configs/.p10k.zsh .p10k.zsh
+configs/chadrc.lua .config/nvim/lua/custom/chadrc.lua
+configs/mappings.lua .config/nvim/lua/custom/mappings.lua
+configs/plugins.lua .config/nvim/lua/custom/plugins.lua

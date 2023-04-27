@@ -17,7 +17,7 @@ export ZSH="$HOME/.oh-my-zsh"
 
 source $ZSH/oh-my-zsh.sh
 
-EDITOR='vim'
+EDITOR='nvim'
 
 DISABLE_UPDATE_PROMPT="true"
 
@@ -32,8 +32,8 @@ alias c='clear'                  # Clear terminal screen
 alias sd='sudo shutdown now'     # Shutdown computer now
 alias sdr='sudo shutdown -r now' # Restart computer now
 alias nuke='rm -rf * -i'         # Delete all files/directories in a directory
-alias rc='vim ~/.zshrc'          # Open ~/.zshrc for editing
-alias vrc='vim ~/.vimrc'         # Open ~/.vimrc for editing
+alias rc='nvim ~/.zshrc'          # Open ~/.zshrc for editing
+# alias vrc='nvim ~/.vimrc'         # Open ~/.vimrc for editing
 alias src='source ~/.zshrc'      # Source ~/.zshrc
 alias open='xdg-open'            # Open a file using xdg-open
 
@@ -57,7 +57,7 @@ alias g='git'                    # git is too long
 
 alias rm='trash'                 # Remove using sudo and opions -r and -f
 alias i="sudo apt install"       # Install a package
-alias v="vim"                    # Open a file in vim
+alias v="nvim"                    # Open a file in nvim
 alias d="docker"            # Docker
 alias dc="docker-compose"   # Docker compose
 

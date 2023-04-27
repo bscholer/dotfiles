@@ -4,9 +4,13 @@ RUN apt-get update -y && apt-get upgrade -y
 
 RUN apt-get install -y sudo apt-utils dialog vim zsh curl wget git sl trash-cli ruby-full build-essential fontconfig passwd htop
 
+RUN apt-get install -y dialog apt-utils
+
 RUN apt-get update -y && apt-get upgrade -y
 
 WORKDIR /root
+
+ENV DEBIAN_FRONTEND=noninteractive
 
 COPY install.sh ./
 

@@ -1,9 +1,10 @@
 ubuntu:
-	docker build . --file Dockerfile-ubuntu -t quick-config & docker stop quick-config-test && docker rm quick-config-test
-	wait
-	docker run -it -d --name quick-config-test quick-config && docker exec -it quick-config-test /bin/bash
+	docker build . --file Dockerfile-ubuntu -t quick-config --progress plain
+	docker rm -f quick-config-test || true
+	docker run -it --name quick-config-test quick-config /usr/bin/zsh
 
 fedora:
-	docker build . --file Dockerfile-fedora -t quick-config & docker stop quick-config-test && docker rm quick-config-test
-	wait
-	docker run -it -d --name quick-config-test quick-config && docker exec -it quick-config-test /bin/bash
+	docker build . --file Dockerfile-fedora -t quick-config --progress plain
+	docker rm -f quick-config-test || true
+	docker run -it --name quick-config-test quick-config /usr/bin/zsh
+

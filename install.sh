@@ -137,7 +137,7 @@ function install_neovim_globally() {
   _process "Installing Neovim globally using AppImage..."
 
   # Download the AppImage
-  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+  curl -sSLO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
 
   # Make the AppImage executable
   chmod u+x nvim.appimage
@@ -145,7 +145,7 @@ function install_neovim_globally() {
   # Test running the AppImage
   if ! ./nvim.appimage --version &> /dev/null; then
     _warning "Running nvim.appimage directly failed. Attempting to extract and run..."
-    ./nvim.appimage --appimage-extract
+    ./nvim.appimage --appimage-extract &> /dev/null 2>&1
     if ! ./squashfs-root/AppRun --version &> /dev/null; then
       _warning "Failed to run Neovim after extraction. Aborting installation."
       return 1
@@ -153,8 +153,8 @@ function install_neovim_globally() {
   fi
 
   # Expose Neovim globally
-  sudo mv squashfs-root /
-  sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
+  sudo mv squashfs-root / &> /dev/null 2>&1
+  sudo ln -s /squashfs-root/AppRun /usr/bin/nvim &> /dev/null 2>&1
 
   _success "Neovim installed globally."
 }
