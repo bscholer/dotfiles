@@ -71,16 +71,48 @@ detect_package_manager() {
   echo $package_manager
 }
 
+update_package_manager() {
+  _info "Updating package manager..."
+
+  case "$(package_manager)" in
+    apt-get)
+      _process "Updating apt-get package manager"
+      sudo apt-get update -y >> $LOG 2>&1
+      _success "Updated apt-get package manager"
+      ;;
+    dnf)
+      _process "Updating dnf package manager"
+      sudo dnf update -y >> $LOG 2>&1
+      _success "Updated dnf package manager"
+      ;;
+    yum)
+      _process "Updating yum package manager"
+      sudo yum update -y >> $LOG 2>&1
+      _success "Updated yum package manager"
+      ;;
+    pacman)
+      _process "Updating pacman package manager"
+      sudo pacman -Sy >> $LOG 2>&1
+      _success "Updated pacman package manager"
+      ;;
+    zypper)
+      _process "Updating zypper package manager"
+      sudo zypper refresh >> $LOG 2>&1
+      _success "Updated zypper package manager"
+      ;;
+    pkg)
+      _process "Updating pkg package manager"
+      pkg update >> $LOG 2>&1
+      _success "Updated pkg package manager"
+      ;;
+    *)
+      _warning "Unsupported package manager. Skipping update."
+      ;;
+  esac
+}
+
+
 install_programs() {
-#  _process "→ Updating and Installing programs"
-#   if command -v apt-get &> /dev/null; then
-#     _process "  → Updating"
-#     sudo apt-get update &> /dev/null && sudo apt-get upgrade -y &> /dev/null
-#   fi
-#   if command -v dnf &> /dev/null; then
-#     _process "  → Updating"
-#     sudo dnf update &> /dev/null 
-#   fi
   _process "→ Installing dependencies"
   if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
     _success "Installed: ${PROGRAMS[@]}"
@@ -226,7 +258,7 @@ function install_ruby() {
   _process "Installing Ruby..."
 
   case "${package_manager}" in
-    apt-get)
+    apt)
       sudo apt-get install -y ruby-full
       ;;
     dnf)
