@@ -53,7 +53,7 @@ _finish() {
 detect_package_manager() {
   local package_manager=""
   if command -v apt-get &> /dev/null; then
-    package_manager="apt"
+    package_manager="apt-get"
   elif command -v pacman &> /dev/null; then
     package_manager="pacman"
   elif command -v dnf &> /dev/null; then
@@ -111,10 +111,47 @@ update_package_manager() {
   esac
 }
 
-
 install_programs() {
-  _process "→ Installing dependencies"
-  if sudo apt-get install -y "${PROGRAMS[@]}" > /dev/null || sudo pacman -S "${PROGRAMS[@]}" > /dev/null || sudo dnf install -y "${PROGRAMS[@]}" > /dev/null || sudo yum install -y "${PROGRAMS[@]}" > /dev/null || sudo brew install "${PROGRAMS[@]}" > /dev/null || pkg install "${PROGRAMS[@]}" > /dev/null ; then
+  local package_manager="$(detect_package_manager)"
+  if [[ -z "$package_manager" ]]; then
+    _warning "No supported package manager found. Please install one and try again."
+    exit 1
+  fi
+
+  _process "Installing dependencies using $package_manager..."
+
+  case "$package_manager" in
+    apt-get)
+      _process "Installing dependencies using apt-get package manager"
+      sudo apt-get install -y "${PROGRAMS[@]}" >> $LOG 2>&1
+      ;;
+    pacman)
+      _process "Installing dependencies using pacman package manager"
+      sudo pacman -S "${PROGRAMS[@]}" --noconfirm >> $LOG 2>&1
+      ;;
+    dnf)
+      _process "Installing dependencies using dnf package manager"
+      sudo dnf install -y "${PROGRAMS[@]}" >> $LOG 2>&1
+      ;;
+    yum)
+      _process "Installing dependencies using yum package manager"
+      sudo yum install -y "${PROGRAMS[@]}" >> $LOG 2>&1
+      ;;
+    brew)
+      _process "Installing dependencies using brew package manager"
+      brew install "${PROGRAMS[@]}" >> $LOG 2>&1
+      ;;
+    pkg)
+      _process "Installing dependencies using pkg package manager"
+      sudo pkg install -y "${PROGRAMS[@]}" >> $LOG 2>&1
+      ;;
+    *)
+      _warning "No supported package manager found. Please install one and try again."
+      exit 1
+      ;;
+  esac
+
+  if [[ $? -eq 0 ]]; then
     _success "Installed: ${PROGRAMS[@]}"
   else
     _warning "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
@@ -258,7 +295,7 @@ function install_ruby() {
   _process "Installing Ruby..."
 
   case "${package_manager}" in
-    apt)
+    apt-get)
       sudo apt-get install -y ruby-full
       ;;
     dnf)
