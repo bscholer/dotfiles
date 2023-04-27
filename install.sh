@@ -3,10 +3,12 @@ LOG="${HOME}/logs/dotfile-installer.log"
 GITHUB_USER="bscholer"
 GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
-USER_GIT_AUTHOR_EMAIL="benscholer3248511@gmail.com"
+USER_GIT_AUTHOR_EMAIL="github@benscholer.com"
 DIR="${HOME}/.dotfiles"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "ruby" "fontconfig" "htop" "curl" "wget") # passwd, which provides chsh intentionally left out
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep") # passwd, which provides chsh intentionally left out
 INSTALL_NODE=true
+
+export TERM=${TERM:-xterm-256color}
 
 for var in "$@"
 do
@@ -46,6 +48,27 @@ _warning() {
 _finish() {
   echo ""
   echo "🎉 Installation complete! Enjoy the terminal! 🎉"
+}
+
+detect_package_manager() {
+  local package_manager=""
+  if command -v apt-get &> /dev/null; then
+    package_manager="apt"
+  elif command -v pacman &> /dev/null; then
+    package_manager="pacman"
+  elif command -v dnf &> /dev/null; then
+    package_manager="dnf"
+  elif command -v yum &> /dev/null; then
+    package_manager="yum"
+  elif command -v brew &> /dev/null; then
+    package_manager="brew"
+  elif command -v pkg &> /dev/null; then
+    package_manager="pkg"
+  else
+    _warning "No supported package manager found. Please install one and try again."
+    exit 1
+  fi
+  echo $package_manager
 }
 
 install_programs() {
@@ -110,6 +133,32 @@ install_zsh_plugins() {
   _success "Installed zsh plugins"
 }
 
+function install_neovim_globally() {
+  _process "Installing Neovim globally using AppImage..."
+
+  # Download the AppImage
+  curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+
+  # Make the AppImage executable
+  chmod u+x nvim.appimage
+
+  # Test running the AppImage
+  if ! ./nvim.appimage --version &> /dev/null; then
+    _warning "Running nvim.appimage directly failed. Attempting to extract and run..."
+    ./nvim.appimage --appimage-extract
+    if ! ./squashfs-root/AppRun --version &> /dev/null; then
+      _warning "Failed to run Neovim after extraction. Aborting installation."
+      return 1
+    fi
+  fi
+
+  # Expose Neovim globally
+  sudo mv squashfs-root /
+  sudo ln -s /squashfs-root/AppRun /usr/bin/nvim
+
+  _success "Neovim installed globally."
+}
+
 install_colorls() {  
   sudo gem install colorls > /dev/null
   _success "Installed colorls"
@@ -118,6 +167,8 @@ install_colorls() {
 install_fonts() {
   _process "→ Installing Nerd Fonts 🤓 "
 
+  _process "  → Installing JetBrains Mono"
+  wget -q -N https://github.com/ryanoasis/nerd-fonts/blob/master/patched-fonts/JetBrainsMono/Ligatures/Light/complete/JetBrains%20Mono%20Nerd%20Font%20Complete%20Mono%20Light.ttf -P ~/.fonts/
   _process "  → Installing Hack"
   wget -q -N https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/Hack/Regular/complete/Hack%20Regular%20Nerd%20Font%20Complete.ttf -P ~/.fonts/
   _process "  → Installing Roboto Mono"
@@ -171,22 +222,56 @@ install_node() {
   _success "Installed node stuff"
 }
 
-install_vim_plugins() {
-  _process "→ Configuring vim plugins (this may take some time)"
-  _process "  → Installing vundle"
-  if [ -d ~/.vim/bundle/Vundle.vim ]; then
-    cd ~/.vim/bundle/Vundle.vim && git pull --quiet
-  else
-    git clone --quiet --depth=1 https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+function install_ruby() {
+  _process "Installing Ruby..."
+
+  case "${package_manager}" in
+    apt-get)
+      sudo apt-get install -y ruby-full
+      ;;
+    dnf)
+      sudo dnf install -y ruby
+      ;;
+    pacman)
+      sudo pacman -S --noconfirm ruby
+      ;;
+    zypper)
+      sudo zypper install -y ruby
+      ;;
+    pkg)
+      pkg install -y ruby
+      ;;
+    apk)
+      apk add --no-cache ruby
+      ;;
+    *)
+      _warning "Unsupported package manager. Please install Ruby manually."
+      return 1
+      ;;
+  esac
+
+  _success "Ruby installation completed."
+}
+
+function install_nvchad() {
+  _process "Setting up Neovim with NvChad..."
+
+  # Prerequisites
+  if ! command -v nvim &> /dev/null; then
+    _warning "Neovim not found. Please install Neovim globally before running this function."
+    return 1
   fi
 
-  _process "  → Installing vim plugins"
-  vim +PluginInstall +qall > /dev/null
+  if ! command -v git &> /dev/null; then
+    _warning "Git not found. Please install Git before running this function."
+    return 1
+  fi
 
-  _process "  → Installing CoC.vim"
-  cd ~/.vim/bundle/coc.nvim && yarn install --silent > /dev/null && yarn build --silent > /dev/null
+  # Install NvChad
+  _process "Installing NvChad..."
+  git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 
-  [[ $? ]] && _success "Installed vim plugins"
+  _process "Neovim setup with NvChad completed."
 }
 
 setup_git_authorship() {
@@ -304,9 +389,15 @@ set_default_shell() {
 install() {
   _intro
 
+  detect_package_manager
+
   install_programs
   install_ohmyzsh
   install_zsh_plugins
+
+  install_neovim_globally
+  install_ruby
+  install_nvchad
 
   install_colorls
   install_node
@@ -316,8 +407,6 @@ install() {
 
   download_dotfiles
   link_dotfiles
-
-  install_vim_plugins
 
   #install_crontab
   setup_git_authorship
