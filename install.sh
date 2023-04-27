@@ -203,6 +203,12 @@ install_zsh_plugins() {
 }
 
 function install_neovim_globally() {
+  # Check if Neovim is already installed globally
+  if command -v nvim &> /dev/null; then
+    _warning "Neovim is already installed globally."
+    return 0
+  fi
+
   _process "Installing Neovim globally using AppImage..."
 
   # Download the AppImage
