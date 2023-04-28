@@ -7,7 +7,7 @@ local plugins = {
     event = "InsertEnter",
     config = function()
       require("copilot").setup({})
-  end,
+    end,
   },
   {
     "jose-elias-alvarez/null-ls.nvim",
@@ -15,7 +15,21 @@ local plugins = {
     config = function()
        require("custom.plugins.null-ls").setup()
     end
-  }
+  },
+  {
+      "Pocco81/TrueZen.nvim",
+      cmd = {
+         "TZAtaraxis",
+         "TZMinimalist",
+         "TZFocus",
+      },
+      config = function()
+         require("true-zen").setup()
+      end
+   },
+   {
+    'kdheepak/lazygit.nvim'
+   }
  --  {
  --  "neovim/nvim-lspconfig",
  --

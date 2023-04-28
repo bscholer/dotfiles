@@ -239,6 +239,59 @@ install_colorls() {
   _success "Installed colorls"
 }
 
+install_lazygit() {
+  _process "→ Installing lazygit"
+
+  case $package_manager in
+    apt)
+      LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
+      curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+      tar xf lazygit.tar.gz lazygit
+      sudo install lazygit /usr/local/bin
+      ;;
+    dnf)
+      sudo dnf copr enable atim/lazygit -y
+      sudo dnf install lazygit
+      ;;
+    pacman)
+      sudo pacman -S lazygit
+      ;;
+    brew)
+      brew install jesseduffield/lazygit/lazygit
+      ;;
+    port)
+      sudo port install lazygit
+      ;;
+    xbps)
+      sudo xbps-install -S lazygit
+      ;;
+    scoop)
+      scoop bucket add extras
+      scoop install lazygit
+      ;;
+    go)
+      go install github.com/jesseduffield/lazygit@latest
+      ;;
+    choco)
+      choco install lazygit
+      ;;
+    conda)
+      conda install -c conda-forge lazygit
+      ;;
+    emerge)
+      sudo emerge dev-vcs/lazygit
+      ;;
+    pkg)
+      pkg install lazygit
+      ;;
+    *)
+      _warning "Unsupported package manager. Please install lazygit manually."
+      ;;
+  esac
+
+  _success "Installed lazygit"
+}
+
 install_fonts() {
   _process "→ Installing Nerd Fonts 🤓 "
 
@@ -399,7 +452,7 @@ download_dotfiles() {
   [[ $? ]] && _success "Repository downloaded"
 }
 
-link_dotfiles() {
+Link_dotfiles() {
   # symlink files to the HOME directory.
   if [[ -f "${DIR}/opt/files" ]]; then
     _process "→ Symlinking dotfiles in /configs"
@@ -467,6 +520,7 @@ install() {
   detect_package_manager
 
   install_programs
+  install_lazygit
   install_ohmyzsh
   install_zsh_plugins
 

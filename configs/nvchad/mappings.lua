@@ -17,7 +17,6 @@ M.abc = {
 
   i = {
      ["jj"] = { "<Esc>", "escape insert mode", opts = { nowait = true }},
-    -- ...
   }
 }
 

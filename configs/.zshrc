@@ -43,14 +43,14 @@ alias spn='spt playback --next'
 alias spp='spt playback --previous'
 
 # Git aliases
-function lazygit() {             # A function to add, commit, and push all at once.
+# qg for quickgit
+function qg() {             # A function to add, commit, and push all at once.
   git pull
   git add .
   git commit --quiet -a -m "$1"
   git push --quiet && printf "%s✓ Pushed successfully!%s\n" "$(tput setaf 2)" "$(tput sgr0)"
 }
 
-alias lg='lazygit'               # Because I'm really lazy
 alias g='git'                    # git is too long
 
 alias rm='trash'                 # Remove using sudo and opions -r and -f
