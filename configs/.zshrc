@@ -7,7 +7,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-
 #if [ -d "/usr/local/opt/dotfiles" ]; then
   #$(/usr/local/opt/dotfiles/update.sh)
 #fi
@@ -82,6 +81,3 @@ fi
 if [ -f ~/.zshrc-local ]; then
   source ~/.zshrc-local
 fi
-
-# Load Angular CLI autocompletion.
-source < (ng completion script)
