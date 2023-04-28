@@ -21,7 +21,7 @@ EDITOR='nvim'
 
 DISABLE_UPDATE_PROMPT="true"
 
-plugins=(git z zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search zsh-completions extract catimg docker aws)
+plugins=(git z zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring-search zsh-completions extract catimg docker aws azcli)
 
 unsetopt complete_aliases
 
@@ -42,7 +42,6 @@ alias sp='spt'
 alias spl='spt playback --like'
 alias spn='spt playback --next'
 alias spp='spt playback --previous'
-
 
 # Git aliases
 function lazygit() {             # A function to add, commit, and push all at once.
@@ -83,3 +82,6 @@ fi
 if [ -f ~/.zshrc-local ]; then
   source ~/.zshrc-local
 fi
+
+# Load Angular CLI autocompletion.
+source < (ng completion script)

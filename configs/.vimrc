@@ -47,7 +47,7 @@ call vundle#begin()
   Plugin 'frazrepo/vim-rainbow'
   Plugin 'jiangmiao/auto-pairs'
   Plugin 'ryanoasis/vim-devicons'
-  Plugin 'thaerkh/vim-workspace'
+  Plugin 'posva/vim-vue'
 call vundle#end()
 
 
