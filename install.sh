@@ -20,10 +20,7 @@ done
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
-_intro() {
-  echo "🐧 ******** bscholer terminal setup script ******** 🐧"
-  echo ""
-}
+LOG_TEMP="log_temp.txt"
 
 _info() {
   echo "$(date) INFO:  $@" >> $LOG
@@ -32,17 +29,24 @@ _info() {
 
 _process() {
   echo "$(date) PROCESSING:  $@" >> $LOG
-  printf "$(tput setaf 6)%s...$(tput sgr0)\n" "$@"
+  echo "$(tput setaf 6)%s...$(tput sgr0)\n" "$@" >> $LOG_TEMP
 }
 
 _success() {
   local message=$@
   printf "%s✓ Success: %s%s\n" "$(tput setaf 2)" "$message" "$(tput sgr0)"
+  rm -f $LOG_TEMP
 }
 
 _warning() {
   echo "$(date) WARNING:  $@" >> $LOG
   printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
+  cat $LOG_TEMP
+  rm -f $LOG_TEMP
+}
+
+start_process() {
+  echo -n > $LOG_TEMP
 }
 
 _finish() {
@@ -452,7 +456,7 @@ download_dotfiles() {
   [[ $? ]] && _success "Repository downloaded"
 }
 
-Link_dotfiles() {
+link_dotfiles() {
   # symlink files to the HOME directory.
   if [[ -f "${DIR}/opt/files" ]]; then
     _process "→ Symlinking dotfiles in /configs"
@@ -516,6 +520,20 @@ set_default_shell() {
 
 install() {
   _intro
+  start_process
+
+  _process "Step 1"
+  # Step 1 commands
+  _success "Step 1 completed"
+
+  _process "Step 2"
+  # Step 2 commands
+  if [some_condition]; then
+    _warning "Step 2 failed"
+  fi
+
+  _success "Step 2 completed"
+
 
   detect_package_manager
 
