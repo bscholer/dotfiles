@@ -3,12 +3,19 @@ local plugins = {
 
   {
   "zbirenbaum/copilot.lua",
-  cmd = "Copilot",
-  event = "InsertEnter",
-  config = function()
-    require("copilot").setup({})
+    cmd = "Copilot",
+    event = "InsertEnter",
+    config = function()
+      require("copilot").setup({})
   end,
   },
+  {
+    "jose-elias-alvarez/null-ls.nvim",
+    after = "nvim-lspconfig",
+    config = function()
+       require("custom.plugins.null-ls").setup()
+    end
+  }
  --  {
  --  "neovim/nvim-lspconfig",
  --
