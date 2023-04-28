@@ -65,10 +65,9 @@ detect_package_manager() {
   elif command -v pkg &> /dev/null; then
     package_manager="pkg"
   else
-    _warning "No supported package manager found. Please install one and try again."
+    _warning "No supported package manager found. Please install one and try again"
     exit 1
   fi
-  echo $package_manager
 }
 
 update_package_manager() {
@@ -114,7 +113,7 @@ update_package_manager() {
 install_programs() {
   local package_manager="$(detect_package_manager)"
   if [[ -z "$package_manager" ]]; then
-    _warning "No supported package manager found. Please install one and try again."
+    _warning "No supported package manager found. Please install one and try again"
     exit 1
   fi
 
@@ -146,7 +145,7 @@ install_programs() {
       sudo pkg install -y "${PROGRAMS[@]}" >> $LOG 2>&1
       ;;
     *)
-      _warning "No supported package manager found. Please install one and try again."
+      _warning "No supported package manager found. Please install one and try again"
       exit 1
       ;;
   esac
@@ -241,6 +240,7 @@ install_colorls() {
 
 install_lazygit() {
   _process "→ Installing lazygit"
+  echo "$package_manager"
 
   case "$package_manager" in
     apt-get)
