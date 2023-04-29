@@ -50,7 +50,7 @@ function qg() {             # A function to add, commit, and push all at once.
   git commit --quiet -a -m "$1"
   git push --quiet && printf "%s✓ Pushed successfully!%s\n" "$(tput setaf 2)" "$(tput sgr0)"
 }
-
+alias lg='lazygit'
 alias g='git'                    # git is too long
 
 alias rm='trash'                 # Remove using sudo and opions -r and -f

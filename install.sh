@@ -7,6 +7,7 @@ USER_GIT_AUTHOR_EMAIL="github@benscholer.com"
 DIR="${HOME}/.dotfiles"
 PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep") # passwd, which provides chsh intentionally left out
 INSTALL_NODE=true
+package_manager=""
 
 export TERM=${TERM:-xterm-256color}
 
@@ -51,19 +52,18 @@ _finish() {
 }
 
 detect_package_manager() {
-  local package_manager=""
   if command -v apt-get &> /dev/null; then
-    package_manager="apt-get"
+    echo "apt-get"
   elif command -v pacman &> /dev/null; then
-    package_manager="pacman"
+    echo "pacman"
   elif command -v dnf &> /dev/null; then
-    package_manager="dnf"
+    echo "dnf"
   elif command -v yum &> /dev/null; then
-    package_manager="yum"
+    echo "yum"
   elif command -v brew &> /dev/null; then
-    package_manager="brew"
+    echo "brew"
   elif command -v pkg &> /dev/null; then
-    package_manager="pkg"
+    echo "pkg"
   else
     _warning "No supported package manager found. Please install one and try again"
     exit 1
@@ -240,52 +240,55 @@ install_colorls() {
 
 install_lazygit() {
   _process "→ Installing lazygit"
-  echo "$package_manager"
 
   case "$package_manager" in
     apt-get)
-      LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*')
-      curl -Lo lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-      tar xf lazygit.tar.gz lazygit
-      sudo install lazygit /usr/local/bin
+      temp_dir=$(mktemp -d)
+
+      LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*' 2>/dev/null)
+      curl -sLo "${temp_dir}/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
+      tar xf "${temp_dir}/lazygit.tar.gz" -C "${temp_dir}" lazygit >> $LOG 2>&1
+      sudo install "${temp_dir}/lazygit" /usr/local/bin >> $LOG 2>&1
+
+      rm -rf "${temp_dir}"
       ;;
     dnf)
-      sudo dnf copr enable atim/lazygit -y
-      sudo dnf install lazygit
+      sudo dnf copr enable atim/lazygit -y >> $LOG 2>&1
+      sudo dnf install lazygit >> $LOG 2>&1
       ;;
     pacman)
-      sudo pacman -S lazygit
+      sudo pacman -S lazygit >> $LOG 2>&1
       ;;
     brew)
-      brew install jesseduffield/lazygit/lazygit
+      brew install jesseduffield/lazygit/lazygit >> $LOG 2>&1
       ;;
     port)
-      sudo port install lazygit
+      sudo port install lazygit >> $LOG 2>&1
       ;;
     xbps)
-      sudo xbps-install -S lazygit
+      sudo xbps-install -S lazygit >> $LOG 2>&1
       ;;
     scoop)
-      scoop bucket add extras
-      scoop install lazygit
+      scoop bucket add extras >> $LOG 2>&1
+      scoop install lazygit >> $LOG 2>&1
       ;;
     go)
-      go install github.com/jesseduffield/lazygit@latest
+      go install github.com/jesseduffield/lazygit@latest >> $LOG 2>&1
       ;;
     choco)
-      choco install lazygit
+      choco install lazygit >> $LOG 2>&1
       ;;
     conda)
-      conda install -c conda-forge lazygit
+      conda install -c conda-forge lazygit >> $LOG 2>&1
       ;;
     emerge)
-      sudo emerge dev-vcs/lazygit
+      sudo emerge dev-vcs/lazygit >> $LOG 2>&1
       ;;
     pkg)
-      pkg install lazygit
+      pkg install lazygit >> $LOG 2>&1
       ;;
     *)
-      _warning "Unsupported package manager. Please install lazygit manually."
+      _warning "Unsupported package manager. Please install lazygit manually"
       ;;
   esac
 
@@ -347,7 +350,7 @@ install_node() {
     npm install --quiet -g yarn > /dev/null
   fi
 
-  _success "Installed node stuff"
+  _success "Installed node"
 }
 
 function install_ruby() {
@@ -355,25 +358,25 @@ function install_ruby() {
 
   case "${package_manager}" in
     apt-get)
-      sudo apt-get install -y ruby-full
+      sudo apt-get install -y ruby-full >> $LOG 2>&1
       ;;
     dnf)
-      sudo dnf install -y ruby
+      sudo dnf install -y ruby >> $LOG 2>&1
       ;;
     pacman)
-      sudo pacman -S --noconfirm ruby
+      sudo pacman -S --noconfirm ruby >> $LOG 2>&1
       ;;
     zypper)
-      sudo zypper install -y ruby
+      sudo zypper install -y ruby >> $LOG 2>&1
       ;;
     pkg)
-      pkg install -y ruby
+      pkg install -y ruby >> $LOG 2>&1
       ;;
     apk)
-      apk add --no-cache ruby
+      apk add --no-cache ruby >> $LOG 2>&1
       ;;
     *)
-      _warning "Unsupported package manager. Please install Ruby manually."
+      _warning "Unsupported package manager. Please install Ruby manually"
       return 1
       ;;
   esac
@@ -386,12 +389,24 @@ function install_nvchad() {
 
   # Prerequisites
   if ! command -v nvim &> /dev/null; then
-    _warning "Neovim not found. Please install Neovim globally before running this function."
+    _warning "Neovim not found. Please install Neovim globally before running this function"
     return 1
   fi
 
   if ! command -v git &> /dev/null; then
-    _warning "Git not found. Please install Git before running this function."
+    _warning "Git not found. Please install Git before running this function"
+    return 1
+  fi
+
+  # Check if NvChad is already installed
+  if [ -e ~/.config/nvim/lua/custom/chadrc.lua ]; then
+    _warning "NvChad is already installed. Skipping the installation"
+    return 1
+  fi
+
+  # Check if the ~/.config/nvim directory exists and is not empty
+  if [ -d ~/.config/nvim ] && [ "$(ls -A ~/.config/nvim)" ]; then
+    _warning "The ~/.config/nvim directory already exists and is not empty. Please remove or move it before running this function"
     return 1
   fi
 
@@ -399,7 +414,7 @@ function install_nvchad() {
   _process "Installing NvChad..."
   git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 
-  _process "Neovim setup with NvChad completed."
+  _process "Neovim setup with NvChad completed"
 }
 
 setup_git_authorship() {
@@ -469,20 +484,30 @@ link_dotfiles() {
     IFS=$'\r\n'
     links=($(cat "${files}"))
 
+    success=true
+
     # Loop through array of files
     for index in ${!links[*]}
     do
       for link in ${links[$index]}
       do
-	_process "  → Linking ${links[$index]}"
-	# set IFS back to space to split string on
-	IFS=$' '
-	# create an array of line items
-	file=(${links[$index]})
-	# bakcup
-	cp -L "${HOME}/${file[1]}" "${DIR}/backup/${file[1]}"
-	# Create symbolic link
-	ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
+        _process "  → Linking ${links[$index]}"
+        # set IFS back to space to split string on
+        IFS=$' '
+        # create an array of line items
+        file=(${links[$index]})
+        # Create backup directory if it doesn't exist
+        mkdir -p "${DIR}/backup/$(dirname ${file[1]})"
+        # Backup
+        cp -L "${HOME}/${file[1]}" "${DIR}/backup/${file[1]}"
+        # Create symbolic link
+        ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
+
+        # Test if the symlink was created successfully
+        if [[ ! -L "${HOME}/${file[1]}" || ! "$(readlink "${HOME}/${file[1]}")" == "${DIR}/${file[0]}" ]]; then
+          success=false
+          _warning "Failed to link ${links[$index]}"
+        fi
       done
       # set separater back to carriage return & new line break
       IFS=$'\r\n'
@@ -491,7 +516,11 @@ link_dotfiles() {
     # Reset IFS back
     IFS=$OIFS
 
-    [[ $? ]] && _success "All files have been copied"
+    if $success; then
+      _success "All files have been copied"
+    else
+      _warning "Some files failed to link"
+    fi
   fi
 }
 
@@ -517,7 +546,7 @@ set_default_shell() {
 install() {
   _intro
 
-  detect_package_manager
+  package_manager=$(detect_package_manager)
 
   install_programs
   install_lazygit

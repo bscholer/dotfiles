@@ -4,5 +4,5 @@
  M.plugins = "custom.plugins"
  
 
- M.ui = {theme = 'oceanic-next'}
+ M.ui = {theme = 'catppuccin'}
  return M
