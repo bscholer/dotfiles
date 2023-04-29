@@ -28,7 +28,8 @@ local plugins = {
       end
    },
    {
-    'kdheepak/lazygit.nvim'
+    'kdheepak/lazygit.nvim',
+    lazy = false
    }
  --  {
  --  "neovim/nvim-lspconfig",

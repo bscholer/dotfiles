@@ -5,7 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="github@benscholer.com"
 DIR="${HOME}/.dotfiles"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep") # passwd, which provides chsh intentionally left out
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep")
 INSTALL_NODE=true
 package_manager=""
 

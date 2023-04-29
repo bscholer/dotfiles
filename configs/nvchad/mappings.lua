@@ -11,12 +11,17 @@ M.disabled = {
 -- Your custom mappings
 M.abc = {
   n = {
-     ["<C-n>"] = {"<cmd> Telescope <CR>", "Telescope"},
-     ["<C-s>"] = {":Telescope Files <CR>", "Telescope Files"} 
+    ["<C-n>"] = {"<cmd> Telescope <CR>", "Telescope"},
+    ["<C-s>"] = {":Telescope Files <CR>", "Telescope Files"},
+    ["<leader>gg"] = {":LazyGit <CR>", "LazyGit"},
+    ["<leader>zn"] = {":TZNarrow<CR>", "TrueZen Narrow"},
+    ["<leader>zf"] = {":TZFocus<CR>", "TrueZen Focus"},
+    ["<leader>zm"] = {":TZMinimalist<CR>", "TrueZen Minimalist"},
+    ["<leader>za"] = {":TZAtaraxis<CR>", "TrueZen Ataraxis"},
   },
 
   i = {
-     ["jj"] = { "<Esc>", "escape insert mode", opts = { nowait = true }},
+    ["jj"] = { "<Esc>", "escape insert mode", opts = { nowait = true }},
   }
 }
 
