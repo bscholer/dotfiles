@@ -70,7 +70,7 @@ function run_mason_install_all() {
     return 1
   fi
 
-  _process "Running MasonInstallAll in Neovim..."
+  _process "→ Running MasonInstallAll in Neovim..."
 
   # Run the MasonInstallAll command and quit Neovim
   if ! nvim +MasonInstallAll +q; then
