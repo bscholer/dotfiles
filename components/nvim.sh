@@ -81,3 +81,20 @@ function run_mason_install_all() {
   _success "MasonInstallAll successfully executed in Neovim."
 }
 
+function run_lazy_install() {
+  # Check if Neovim is installed
+  if ! command -v nvim &> /dev/null; then
+    _warning "Neovim is not installed. Please install Neovim first."
+    return 1
+  fi
+
+  _process "→ Running Lazy install in Neovim..."
+
+  # Run the MasonInstallAll command and quit Neovim
+  if ! nvim +"Lazy install" +q; then
+    _warning "Failed to run Lazy install in Neovim. Please check your Neovim configuration."
+    return 1
+  fi
+
+  _success "Lazy install successfully executed in Neovim."
+}

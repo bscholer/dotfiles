@@ -96,6 +96,7 @@ install() {
   link_dotfiles
 
   run_mason_install_all
+  run_lazy_install
 
   #install_crontab
   setup_git_authorship
