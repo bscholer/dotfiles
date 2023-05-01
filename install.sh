@@ -59,21 +59,16 @@ download_and_source_scripts() {
   local temp_dir=$(mktemp -d)
   
   _process "Downloading and sourcing script files in temporary directory..."
-  local total_scripts=$(echo "${installer_scripts}" | wc -l)
-  local script_count=0
   for script_name in ${installer_scripts}; do
-    script_count=$((script_count + 1))
-    printf "\r  → Downloading and sourcing script files: %s/%s" "${script_count}" "${total_scripts}"
+    _process "  → Downloading and sourcing ${script_name}"
     local raw_script_url="https://raw.githubusercontent.com/bscholer/dotfiles/master/components/${script_name}"
     wget --quiet -O "${temp_dir}/${script_name}" "${raw_script_url}"
     source "${temp_dir}/${script_name}"
   done
-  printf "\n"
   
   # Remove the temporary directory
   rm -r "${temp_dir}"
 }
-
 
 install() {
   _intro
