@@ -80,7 +80,9 @@ link_dotfiles() {
         # Create backup directory if it doesn't exist
         mkdir -p "${DIR}/backup/$(dirname ${file[1]})"
         # Backup
-        cp -L "${HOME}/${file[1]}" "${DIR}/backup/${file[1]}"
+        if [[ -e "${HOME}/${file[1]}" ]]; then
+          cp -L "${HOME}/${file[1]}" "${DIR}/backup/${file[1]}"
+        fi
         # Create symbolic link
         ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}"
 
