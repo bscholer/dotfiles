@@ -86,7 +86,7 @@ link_dotfiles() {
         fi
 
         # Create the directory where the file is going first
-        mkdir -p "$(dirname "${HOME}/${file[1]}")" >> $LOG 2>&1
+        mkdir -p "${HOME}/$(dirname "${file[1]}")" >> $LOG 2>&1
 
         # Create symbolic link
         ln -fs "${DIR}/${file[0]}" "${HOME}/${file[1]}" >> $LOG 2>&1

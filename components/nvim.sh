@@ -1,14 +1,21 @@
-function install_neovim_globally() {
+function install_or_update_neovim_globally() {
+  desired_version="0.9.0"
+
   # Check if Neovim is already installed globally
   if command -v nvim &> /dev/null; then
-    _warning "Neovim is already installed globally."
-    return 0
+    installed_version=$(nvim --version | head -n 1 | awk '{print $2}')
+    if [[ $(echo -e "$installed_version\n$desired_version" | sort -V | head -n1) == $desired_version ]]; then
+      _warning "Neovim is already installed globally with version $installed_version."
+      return 0
+    else
+      _warning "Neovim is installed globally with version $installed_version, updating to $desired_version."
+    fi
+  else
+    _process "Installing Neovim globally using AppImage..."
   fi
 
-  _process "Installing Neovim globally using AppImage..."
-
   # Download the AppImage
-  curl -sSLO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+  curl -sSLO "https://github.com/neovim/neovim/releases/download/v$desired_version/nvim.appimage"
 
   # Make the AppImage executable
   chmod u+x nvim.appimage
@@ -27,7 +34,7 @@ function install_neovim_globally() {
   sudo mv squashfs-root / &> /dev/null 2>&1
   sudo ln -s /squashfs-root/AppRun /usr/bin/nvim &> /dev/null 2>&1
 
-  _success "Neovim installed globally."
+  _success "Neovim installed or updated globally to version $desired_version."
 }
 
 function install_nvchad() {
