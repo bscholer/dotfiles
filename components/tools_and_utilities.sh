@@ -62,7 +62,7 @@ install_colorls() {
 
 install_lazydocker() {
   _process "→ Installing lazydocker"
-  curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash >> $LOG 2>&1
+  curl -s https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash >> $LOG 2>&1
   _success "Installed lazydocker"
 }
 
