@@ -5,7 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="github@benscholer.com"
 DIR="${HOME}/.dotfiles"
-PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep" "python3-venv")
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep")
 INSTALL_NODE=true
 package_manager=""
 export TERM=${TERM:-xterm-256color}
@@ -78,6 +78,7 @@ install() {
   package_manager=$(detect_package_manager)
   install_programs
   install_lazygit
+  install_lazydocker
   install_ohmyzsh
   install_zsh_plugins
 

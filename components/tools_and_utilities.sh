@@ -56,10 +56,15 @@ install_lazygit() {
 }
 
 install_colorls() {  
-  sudo gem install colorls > /dev/null
+  sudo gem install colorls >> $LOG 2>&1
   _success "Installed colorls"
 }
 
+install_lazydocker() {
+  _process "→ Installing lazydocker"
+  curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash >> $LOG 2>&1
+  _success "Installed lazydocker"
+}
 
 install_fonts() {
   _process "→ Installing Nerd Fonts 🤓 "
@@ -138,4 +143,35 @@ function install_ruby() {
   esac
 
   _success "Ruby installation completed."
+}
+
+function install_python3_venv() {
+  _process "Installing Python3 venv..."
+
+  case "${package_manager}" in
+    apt-get)
+      sudo apt-get install -y python3-venv >> $LOG 2>&1
+      ;;
+    dnf)
+      sudo dnf install -y python3-virtualenv >> $LOG 2>&1
+      ;;
+    pacman)
+      sudo pacman -S --noconfirm python-virtualenv >> $LOG 2>&1
+      ;;
+    zypper)
+      sudo zypper install -y python3-virtualenv >> $LOG 2>&1
+      ;;
+    pkg)
+      pkg install -y py37-virtualenv >> $LOG 2>&1
+      ;;
+    apk)
+      apk add --no-cache py3-virtualenv >> $LOG 2>&1
+      ;;
+    *)
+      _warning "Unsupported package manager. Please install Python3 venv manually"
+      return 1
+      ;;
+  esac
+
+  _success "Python3 venv installation completed."
 }
