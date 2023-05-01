@@ -64,7 +64,10 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-DISPLAY=$(cat /etc/resolv.conf | grep nameserver | awk '{print $2}'):0
+if [ -n "$DISPLAY" ]; then
+  export DISPLAY=:0
+fi
+
 export LIBGL_ALWAYS_INDIRECT=1
 
 export NVM_DIR="$HOME/.nvm"

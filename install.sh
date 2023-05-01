@@ -8,9 +8,7 @@ DIR="${HOME}/.dotfiles"
 PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep" "python3-venv")
 INSTALL_NODE=true
 package_manager=""
-
 export TERM=${TERM:-xterm-256color}
-
 for var in "$@"
 do
   if [ "$var" = "--no-node" ]; then
@@ -52,24 +50,30 @@ _finish() {
 }
 
 download_and_source_scripts() {
-  local script_base_url="https://raw.githubusercontent.com/bscholer/dotfiles/master/components"
+  local script_base_url="https://api.github.com/repos/bscholer/dotfiles/contents/components"
   
   _process "Fetching installer script files list from the repository..."
-  local installer_scripts=$(curl -s "${script_base_url}" | grep -Po '(?<=href=")[^"]*(?=")')
+  local installer_scripts=$(curl -s "${script_base_url}" | python -c "import sys, json; print('\n'.join([item['name'] for item in json.load(sys.stdin)]))")
   
   # Create a temporary directory to store the scripts
   local temp_dir=$(mktemp -d)
   
   _process "Downloading and sourcing script files in temporary directory..."
+  local total_scripts=$(echo "${installer_scripts}" | wc -l)
+  local script_count=0
   for script_name in ${installer_scripts}; do
-    _process "  → Downloading and sourcing ${script_name}"
-    wget --quiet -O "${temp_dir}/${script_name}" "${script_base_url}/${script_name}"
+    script_count=$((script_count + 1))
+    printf "\r  → Downloading and sourcing script files: %s/%s" "${script_count}" "${total_scripts}"
+    local raw_script_url="https://raw.githubusercontent.com/bscholer/dotfiles/master/components/${script_name}"
+    wget --quiet -O "${temp_dir}/${script_name}" "${raw_script_url}"
     source "${temp_dir}/${script_name}"
   done
+  printf "\n"
   
   # Remove the temporary directory
   rm -r "${temp_dir}"
 }
+
 
 install() {
   _intro
@@ -94,6 +98,8 @@ install() {
 
   download_dotfiles
   link_dotfiles
+
+  run_mason_install_all
 
   #install_crontab
   setup_git_authorship

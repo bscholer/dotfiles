@@ -62,3 +62,22 @@ function install_nvchad() {
 
   _process "Neovim setup with NvChad completed"
 }
+
+function run_mason_install_all() {
+  # Check if Neovim is installed
+  if ! command -v nvim &> /dev/null; then
+    _warning "Neovim is not installed. Please install Neovim first."
+    return 1
+  fi
+
+  _process "Running MasonInstallAll in Neovim..."
+
+  # Run the MasonInstallAll command and quit Neovim
+  if ! nvim +MasonInstallAll +q; then
+    _warning "Failed to run MasonInstallAll in Neovim. Please check your Neovim configuration."
+    return 1
+  fi
+
+  _success "MasonInstallAll successfully executed in Neovim."
+}
+
