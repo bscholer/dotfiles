@@ -1,40 +1,31 @@
-function install_or_update_neovim_globally() {
-  desired_version="0.9.0"
-
+function install_neovim() {
   # Check if Neovim is already installed globally
   if command -v nvim &> /dev/null; then
-    installed_version=$(nvim --version | head -n 1 | awk '{print $2}')
-    if [[ $(echo -e "$installed_version\n$desired_version" | sort -V | head -n1) == $desired_version ]]; then
-      _warning "Neovim is already installed globally with version $installed_version."
-      return 0
-    else
-      _warning "Neovim is installed globally with version $installed_version, updating to $desired_version."
-    fi
+    _warning "Neovim is already installed globally."
   else
-    _process "Installing Neovim globally using AppImage..."
+    _process "Installing Neovim globally from source..."
   fi
 
-  # Download the AppImage
-  curl -sSLO "https://github.com/neovim/neovim/releases/download/v$desired_version/nvim.appimage"
+  # Install necessary dependencies (Debian/Ubuntu)
+  sudo apt-get install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl >> $LOG 2>&1
 
-  # Make the AppImage executable
-  chmod u+x nvim.appimage
+  # Clone Neovim repository into a temporary directory
+  temp_dir=$(mktemp -d)
+  git clone https://github.com/neovim/neovim.git "$temp_dir" >> $LOG 2>&1
+  cd "$temp_dir"
 
-  # Test running the AppImage
-  if ! ./nvim.appimage --version &> /dev/null; then
-    _warning "Running nvim.appimage directly failed. Attempting to extract and run..."
-    ./nvim.appimage --appimage-extract &> /dev/null 2>&1
-    if ! ./squashfs-root/AppRun --version &> /dev/null; then
-      _warning "Failed to run Neovim after extraction. Aborting installation."
-      return 1
-    fi
-  fi
+  # Checkout the master branch and build
+  git checkout master >> $LOG 2>&1
+  make CMAKE_BUILD_TYPE=RelWithDebInfo >> $LOG 2>&1
 
-  # Expose Neovim globally
-  sudo mv squashfs-root / &> /dev/null 2>&1
-  sudo ln -s /squashfs-root/AppRun /usr/bin/nvim &> /dev/null 2>&1
+  # Install Neovim
+  sudo make install >> $LOG 2>&1
 
-  _success "Neovim installed or updated globally to version $desired_version."
+  # Clean up
+  cd -
+  rm -rf "$temp_dir"
+
+  _success "Neovim installed or updated globally from the master branch."
 }
 
 function install_nvchad() {
