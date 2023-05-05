@@ -1,5 +1,6 @@
 configs/.zshrc .zshrc
 configs/.p10k.zsh .p10k.zsh
+configs/.tmux.conf .tmux.conf
 configs/nvchad/chadrc.lua .config/nvim/lua/custom/chadrc.lua
 configs/nvchad/mappings.lua .config/nvim/lua/custom/mappings.lua
 configs/nvchad/misc.lua .config/nvim/lua/custom/misc.lua
@@ -7,4 +8,3 @@ configs/nvchad/plugins-lazygit.lua .config/nvim/lua/custom/plugins-lazygit.lua
 configs/nvchad/plugins-lspconfig.lua .config/nvim/lua/custom/plugins-lspconfig.lua
 configs/nvchad/plugins-null-ls.lua .config/nvim/lua/custom/plugins-null-ls.lua
 configs/nvchad/plugins.lua .config/nvim/lua/custom/plugins.lua
-configs/.tmux.conf .tmux.conf
