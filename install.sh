@@ -50,32 +50,39 @@ _finish() {
 }
 
 download_and_source_scripts() {
-  local script_base_url="https://api.github.com/repos/bscholer/dotfiles/contents/components"
-  
-  local python_command=$(command -v python || command -v python3)
+  if [ -d "./components" ]; then
+    _process "Using local installer script files from the components directory..."
+    for script_name in ./components/*; do
+      _process "  → Sourcing ${script_name}"
+      source "${script_name}"
+    done
+  else
+    local script_base_url="https://api.github.com/repos/bscholer/dotfiles/contents/components"
 
-  _process "Fetching installer script files list from the repository..."
-  if [[ -z $python_command ]]; then
-    _warning "Python is not installed or not in the PATH. Please install Python and make sure it's in your PATH."
-    return 1
+    local python_command=$(command -v python || command -v python3)
+
+    _process "Fetching installer script files list from the repository..."
+    if [[ -z $python_command ]]; then
+      _warning "Python is not installed or not in the PATH. Please install Python and make sure it's in your PATH."
+      return 1
+    fi
+
+    local installer_scripts=$(curl -s "${script_base_url}" | $python_command -c "import sys, json; print('\n'.join([item['name'] for item in json.load(sys.stdin)]))")
+
+    # Create a temporary directory to store the scripts
+    local temp_dir=$(mktemp -d)
+
+    _process "Downloading and sourcing script files in temporary directory..."
+    for script_name in ${installer_scripts}; do
+      _process "  → Downloading and sourcing ${script_name}"
+      local raw_script_url="https://raw.githubusercontent.com/bscholer/dotfiles/master/components/${script_name}"
+      wget --quiet -O "${temp_dir}/${script_name}" "${raw_script_url}"
+      source "${temp_dir}/${script_name}"
+    done
+
+    # Remove the temporary directory
+    rm -r "${temp_dir}"
   fi
-
-  local installer_scripts=$(curl -s "${script_base_url}" | $python_command -c "import sys, json; print('\n'.join([item['name'] for item in json.load(sys.stdin)]))")
-
-  
-  # Create a temporary directory to store the scripts
-  local temp_dir=$(mktemp -d)
-  
-  _process "Downloading and sourcing script files in temporary directory..."
-  for script_name in ${installer_scripts}; do
-    _process "  → Downloading and sourcing ${script_name}"
-    local raw_script_url="https://raw.githubusercontent.com/bscholer/dotfiles/master/components/${script_name}"
-    wget --quiet -O "${temp_dir}/${script_name}" "${raw_script_url}"
-    source "${temp_dir}/${script_name}"
-  done
-  
-  # Remove the temporary directory
-  rm -r "${temp_dir}"
 }
 
 install() {
@@ -90,7 +97,7 @@ install() {
   install_ohmyzsh
   install_zsh_plugins
 
-  install_neovim_globally
+  install_neovim
   install_ruby
   install_nvchad
 
