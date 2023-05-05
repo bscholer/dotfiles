@@ -3,7 +3,7 @@ local M = {}
 M.setup_lsp = function(attach, capabilities)
   local lspconfig = require "lspconfig"
 
-  local servers = { "html", "cssls", "bashls", "clangd", "gopls", "rls", "tsserver", "pyright" }
+  local servers = { "html", "angularls", "eslint", "stylelint_lsp", "cssls", "bashls", "clangd", "tsserver", "pyright" }
 
   for _, lsp in ipairs(servers) do
     lspconfig[lsp].setup {
@@ -18,18 +18,18 @@ M.setup_lsp = function(attach, capabilities)
 
   -- emmet
 
-  local configs = require "lspconfig/configs"
-
-  configs.ls_emmet = {
-    default_config = {
-      cmd = { "ls_emmet", "--stdio" },
-      filetypes = { "html", "css", "scss" },
-      root_dir = function(fname)
-        return vim.loop.cwd()
-      end,
-      settings = {},
-    },
-  }
+  -- local configs = require "lspconfig/configs"
+  --
+  -- configs.ls_emmet = {
+  --   default_config = {
+  --     cmd = { "ls_emmet", "--stdio" },
+  --     filetypes = { "html", "css", "scss" },
+  --     root_dir = function(fname)
+  --       return vim.loop.cwd()
+  --     end,
+  --     settings = {},
+  --   },
+  -- }
 end
 
 return M

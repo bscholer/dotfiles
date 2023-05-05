@@ -14,5 +14,7 @@ if vim.fn.has('unix') == 1 and vim.fn.empty(vim.env.NEOVIM_NODE_VERSION) == 0 th
   end
 end
 
+vim.g.copilot_assume_mapped = true
+
 M.ui = { theme = 'catppuccin' }
 return M

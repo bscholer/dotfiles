@@ -18,6 +18,10 @@ M.abc = {
     ["<leader>zf"] = { ":TZFocus<CR>", "TrueZen Focus" },
     ["<leader>zm"] = { ":TZMinimalist<CR>", "TrueZen Minimalist" },
     ["<leader>za"] = { ":TZAtaraxis<CR>", "TrueZen Ataraxis" },
+    ["<C-h>"] = { "<cmd> TmuxNavigateLeft<CR>", "Window Left" },
+    ["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "Window Right" },
+    ["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "Window Down" },
+    ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "Window Up" },
   },
   v = {
     ["<leader>zn"] = { ":'<,'>TZNarrow<CR>", "TrueZen Narrow" },
