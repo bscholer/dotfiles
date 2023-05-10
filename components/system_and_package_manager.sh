@@ -18,7 +18,7 @@ detect_package_manager() {
 }
 
 update_package_manager() {
-  _info "Updating package manager..."
+  _info "Updating package manager"
 
   case "$(package_manager)" in
     apt-get)
@@ -64,7 +64,7 @@ install_programs() {
     exit 1
   fi
 
-  _process "Installing dependencies using $package_manager..."
+  _process "Installing dependencies using $package_manager"
 
   case "$package_manager" in
     apt-get)
