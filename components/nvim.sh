@@ -1,9 +1,9 @@
 function install_neovim() {
   # Check if Neovim is already installed globally
   if command -v nvim &> /dev/null; then
-    _warning "Neovim is already installed globally."
+    _info "Neovim is already installed globally."
   else
-    _process "Installing Neovim globally from source..."
+    _process "→ Installing Neovim globally from source"
   fi
 
   # Install necessary dependencies (Debian/Ubuntu)
@@ -29,7 +29,7 @@ function install_neovim() {
 }
 
 function install_nvchad() {
-  _process "Setting up Neovim with NvChad..."
+  _process "→ Setting up Neovim with NvChad"
 
   # Prerequisites
   if ! command -v nvim &> /dev/null; then
@@ -44,7 +44,7 @@ function install_nvchad() {
 
   # Check if NvChad is already installed
   if [ -e ~/.config/nvim/lua/custom/chadrc.lua ]; then
-    _warning "NvChad is already installed. Skipping the installation"
+    _info "NvChad is already installed. Skipping the installation"
     return 1
   fi
 
@@ -55,10 +55,10 @@ function install_nvchad() {
   fi
 
   # Install NvChad
-  _process "Installing NvChad..."
+  _process "→ Installing NvChad"
   git clone https://github.com/NvChad/NvChad ~/.config/nvim --depth 1
 
-  _process "Neovim setup with NvChad completed"
+  _success "Neovim setup with NvChad completed"
 }
 
 function run_mason_install_all() {
@@ -68,7 +68,7 @@ function run_mason_install_all() {
     return 1
   fi
 
-  _process "→ Running MasonInstallAll in Neovim..."
+  _process "→ Running MasonInstallAll in Neovim"
 
   # Run the MasonInstallAll command and quit Neovim
   if ! nvim +MasonInstallAll +q; then
@@ -86,7 +86,7 @@ function run_lazy_install() {
     return 1
   fi
 
-  _process "→ Running Lazy install in Neovim..."
+  _process "→ Running Lazy install in Neovim"
 
   # Run the MasonInstallAll command and quit Neovim
   if ! nvim +"Lazy install" +q; then

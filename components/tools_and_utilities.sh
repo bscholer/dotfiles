@@ -115,7 +115,7 @@ install_node() {
 }
 
 function install_ruby() {
-  _process "Installing Ruby..."
+  _process "→ Installing Ruby"
 
   case "${package_manager}" in
     apt-get)
@@ -145,8 +145,31 @@ function install_ruby() {
   _success "Ruby installation completed."
 }
 
+install_go() {
+  if [ "$INSTALL_GO" = false ]; then
+    _process "→ Skipping Go installation"
+    return 0;
+  else
+    _process "→ Installing Go and related tools"
+  fi
+
+  _process "  → Installing gvm"
+  if ! command -v gvm > /dev/null; then
+    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) >> $LOG 2>&1
+    source "$HOME/.gvm/scripts/gvm"
+  fi
+  
+  if ! command -v go > /dev/null; then
+    _process "  → Installing Go"
+    gvm install go1.x -B >> $LOG 2>&1
+    gvm use go1.x --default >> $LOG 2>&1
+  fi
+
+  _success "Installed Go"
+}
+
 function install_python3_venv() {
-  _process "Installing Python3 venv..."
+  _process "Installing Python3 venv"
 
   case "${package_manager}" in
     apt-get)

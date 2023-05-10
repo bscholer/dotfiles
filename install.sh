@@ -7,6 +7,7 @@ USER_GIT_AUTHOR_EMAIL="github@benscholer.com"
 DIR="${HOME}/.dotfiles"
 PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget" "ripgrep")
 INSTALL_NODE=true
+INSTALL_NEOVIM=true
 package_manager=""
 export TERM=${TERM:-xterm-256color}
 for var in "$@"
@@ -15,12 +16,38 @@ do
     INSTALL_NODE=false
     _info "Skipping Node Installation"
   fi
+  if [ "$var" = "--no-neovim" ]; then
+    INSTALL_NEOVIM=false
+    _info "Skipping Neovim Installation"
+  fi
 done
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
+rainbow() {
+  local message=$@
+  local length=${#message}
+  local colors=(1 2 3 4 5 6)
+  local color_index=0
+
+  for ((i=0; i<$length; i++)); do
+    local char=${message:$i:1}
+    printf "$(tput setaf ${colors[$color_index]})%s" "$char"
+    ((color_index++))
+    if ((color_index == ${#colors[@]})); then
+      color_index=0
+    fi
+  done
+  printf "$(tput sgr0)\n"
+}
+
 _intro() {
-  echo "🐧 ******** bscholer terminal setup script ******** 🐧"
+  rainbow "🐧 ******** bscholer terminal setup script ******** 🐧"
+  echo ""
+}
+
+_finish() {
+  rainbow "🎉 Installation complete! Enjoy the terminal! 🎉"
   echo ""
 }
 
@@ -36,17 +63,14 @@ _process() {
 
 _success() {
   local message=$@
-  printf "%s✓ Success: %s%s\n" "$(tput setaf 2)" "$message" "$(tput sgr0)"
+  printf "%s" "$(tput setaf 2)✓ Success: "
+  rainbow "$message"
+  printf "$(tput sgr0)\n"
 }
 
 _warning() {
   echo "$(date) WARNING:  $@" >> $LOG
   printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
-}
-
-_finish() {
-  echo ""
-  echo "🎉 Installation complete! Enjoy the terminal! 🎉"
 }
 
 download_and_source_scripts() {
@@ -97,12 +121,17 @@ install() {
   install_ohmyzsh
   install_zsh_plugins
 
-  install_neovim
-  install_ruby
+  if [ "$INSTALL_NEOVIM" = true ]; then
+    install_neovim
+  fi
   install_nvchad
 
   install_colorls
-  install_node
+  if [ "$INSTALL_NODE" = true ]; then
+    install_node
+  fi
+  install_ruby
+  install_go
 
   install_fonts
   install_powerlevel10k

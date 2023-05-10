@@ -2,7 +2,7 @@
 install_ohmyzsh() {
   _process "→ Installing oh-my-zsh"
   if [ -d ~/.oh-my-zsh ]; then
-    _success "oh-my-zsh already installed"
+    _info "oh-my-zsh already installed"
   else
     git clone --quiet --depth=1 https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
     [[ $? ]] && _success "Installed oh-my-zsh"
@@ -45,7 +45,7 @@ install_zsh_plugins() {
 
 install_powerlevel10k() {
   _process "→ Installing ⚡ powerlevel10k"
-  if [ -d ~/.oh-my-zsh/custom/themes/powerlevel10k ] && [ -d ~/powerlevel10k ]; then
+  if [ -d ~/powerlevel10k ]; then
     cd ~/powerlevel10k && git pull --quiet
     [[ $? ]] && _success "Updated ⚡ powerlevel10k"
   else
