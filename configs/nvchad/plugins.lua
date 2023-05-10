@@ -60,24 +60,20 @@ local plugins = {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      "jose-elias-alvarez/null-ls.nvim",
-      config = function()
-        require("custom.plugins-null-ls")
-      end,
+      -- "jose-elias-alvarez/null-ls.nvim",
+      -- config = function()
+      --   require("custom.plugins-null-ls")
+      -- end,
       -- "jay-babu/mason-null-ls.nvim",
       -- event = { "BufReadPre", "BufNewFile" },
       -- dependencies = {
       --   "williamboman/mason.nvim",
       --   "jose-elias-alvarez/null-ls.nvim",
       -- },
-      -- config = function()
-      --   require("custom.plugins-null-ls")
-      --   -- require("custom.plugins.null-ls") -- require your null-ls config here (example below)
-      -- end,
     },
     config = function()
       require("plugins.configs.lspconfig")
-      require("custom.plugins-lspconfig")
+      require("custom.configs.lspconfig")
     end,
   },
   {

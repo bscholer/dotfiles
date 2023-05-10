@@ -85,3 +85,9 @@ fi
 if [ -f ~/.zshrc-local ]; then
   source ~/.zshrc-local
 fi
+
+
+# Load Angular CLI autocompletion.
+source <(ng completion script)
+
+export PATH=$PATH:/home/bscholer/.spicetify
