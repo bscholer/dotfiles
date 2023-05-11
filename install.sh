@@ -52,12 +52,12 @@ _finish() {
 }
 
 _info() {
-  echo "$(date) INFO:  $@" >> $LOG
+  echo "$(date) INFO:  $@" >> "$LOG"
   printf "$(tput setaf 4)%s...$(tput sgr0)\n" "$@"
 }
 
 _process() {
-  echo "$(date) PROCESSING:  $@" >> $LOG
+  echo "$(date) PROCESSING:  $@" >> "$LOG"
   printf "$(tput setaf 6)%s...$(tput sgr0)\n" "$@"
 }
 
@@ -69,7 +69,7 @@ _success() {
 }
 
 _warning() {
-  echo "$(date) WARNING:  $@" >> $LOG
+  echo "$(date) WARNING:  $@" >> "$LOG"
   printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
 }
 

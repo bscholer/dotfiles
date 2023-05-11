@@ -9,19 +9,19 @@ function install_neovim() {
   fi
 
   # Install necessary dependencies (Debian/Ubuntu)
-  sudo apt-get install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl >> $LOG 2>&1
+  sudo apt-get install -y ninja-build gettext libtool libtool-bin autoconf automake cmake g++ pkg-config unzip curl >> "$LOG" 2>&1
 
   # Clone Neovim repository into a temporary directory
   temp_dir=$(mktemp -d)
-  git clone https://github.com/neovim/neovim.git "$temp_dir" >> $LOG 2>&1
+  git clone https://github.com/neovim/neovim.git "$temp_dir" >> "$LOG" 2>&1
   cd "$temp_dir"
 
   # Checkout the master branch and build
-  git checkout master >> $LOG 2>&1
-  make CMAKE_BUILD_TYPE=RelWithDebInfo >> $LOG 2>&1
+  git checkout master >> "$LOG" 2>&1
+  make CMAKE_BUILD_TYPE=RelWithDebInfo >> "$LOG" 2>&1
 
   # Install Neovim
-  sudo make install >> $LOG 2>&1
+  sudo make install >> "$LOG" 2>&1
 
   # Clean up
   cd -

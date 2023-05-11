@@ -9,45 +9,45 @@ install_lazygit() {
 
       LAZYGIT_VERSION=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*' 2>/dev/null)
       curl -sLo "${temp_dir}/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_${LAZYGIT_VERSION}_Linux_x86_64.tar.gz"
-      tar xf "${temp_dir}/lazygit.tar.gz" -C "${temp_dir}" lazygit >> $LOG 2>&1
-      sudo install "${temp_dir}/lazygit" /usr/local/bin >> $LOG 2>&1
+      tar xf "${temp_dir}/lazygit.tar.gz" -C "${temp_dir}" lazygit >> "$LOG" 2>&1
+      sudo install "${temp_dir}/lazygit" /usr/local/bin >> "$LOG" 2>&1
 
       rm -rf "${temp_dir}"
       ;;
     dnf)
-      sudo dnf copr enable atim/lazygit -y >> $LOG 2>&1
-      sudo dnf install lazygit >> $LOG 2>&1
+      sudo dnf copr enable atim/lazygit -y >> "$LOG" 2>&1
+      sudo dnf install lazygit >> "$LOG" 2>&1
       ;;
     pacman)
-      sudo pacman -S lazygit >> $LOG 2>&1
+      sudo pacman -S lazygit >> "$LOG" 2>&1
       ;;
     brew)
-      brew install jesseduffield/lazygit/lazygit >> $LOG 2>&1
+      brew install jesseduffield/lazygit/lazygit >> "$LOG" 2>&1
       ;;
     port)
-      sudo port install lazygit >> $LOG 2>&1
+      sudo port install lazygit >> "$LOG" 2>&1
       ;;
     xbps)
-      sudo xbps-install -S lazygit >> $LOG 2>&1
+      sudo xbps-install -S lazygit >> "$LOG" 2>&1
       ;;
     scoop)
-      scoop bucket add extras >> $LOG 2>&1
-      scoop install lazygit >> $LOG 2>&1
+      scoop bucket add extras >> "$LOG" 2>&1
+      scoop install lazygit >> "$LOG" 2>&1
       ;;
     go)
-      go install github.com/jesseduffield/lazygit@latest >> $LOG 2>&1
+      go install github.com/jesseduffield/lazygit@latest >> "$LOG" 2>&1
       ;;
     choco)
-      choco install lazygit >> $LOG 2>&1
+      choco install lazygit >> "$LOG" 2>&1
       ;;
     conda)
-      conda install -c conda-forge lazygit >> $LOG 2>&1
+      conda install -c conda-forge lazygit >> "$LOG" 2>&1
       ;;
     emerge)
-      sudo emerge dev-vcs/lazygit >> $LOG 2>&1
+      sudo emerge dev-vcs/lazygit >> "$LOG" 2>&1
       ;;
     pkg)
-      pkg install lazygit >> $LOG 2>&1
+      pkg install lazygit >> "$LOG" 2>&1
       ;;
     *)
       _warning "Unsupported package manager. Please install lazygit manually"
@@ -58,13 +58,13 @@ install_lazygit() {
 }
 
 install_colorls() {  
-  sudo gem install colorls >> $LOG 2>&1
+  sudo gem install colorls >> "$LOG" 2>&1
   _success "Installed colorls"
 }
 
 install_lazydocker() {
   _process "→ Installing lazydocker"
-  curl -s https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash >> $LOG 2>&1
+  curl -s https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash >> "$LOG" 2>&1
   _success "Installed lazydocker"
 }
 
@@ -145,22 +145,22 @@ function install_ruby() {
 
   case "${package_manager}" in
     apt-get)
-      sudo apt-get install -y ruby-full >> $LOG 2>&1
+      sudo apt-get install -y ruby-full >> "$LOG" 2>&1
       ;;
     dnf)
-      sudo dnf install -y ruby >> $LOG 2>&1
+      sudo dnf install -y ruby >> "$LOG" 2>&1
       ;;
     pacman)
-      sudo pacman -S --noconfirm ruby >> $LOG 2>&1
+      sudo pacman -S --noconfirm ruby >> "$LOG" 2>&1
       ;;
     zypper)
-      sudo zypper install -y ruby >> $LOG 2>&1
+      sudo zypper install -y ruby >> "$LOG" 2>&1
       ;;
     pkg)
-      pkg install -y ruby >> $LOG 2>&1
+      pkg install -y ruby >> "$LOG" 2>&1
       ;;
     apk)
-      apk add --no-cache ruby >> $LOG 2>&1
+      apk add --no-cache ruby >> "$LOG" 2>&1
       ;;
     *)
       _warning "Unsupported package manager. Please install Ruby manually"
@@ -181,14 +181,14 @@ install_go() {
 
   _process "  → Installing gvm"
   if ! command -v gvm > /dev/null; then
-    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) >> $LOG 2>&1
+    bash < <(curl -s -S -L https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer) >> "$LOG" 2>&1
     source "$HOME/.gvm/scripts/gvm"
   fi
   
   if ! command -v go > /dev/null; then
     _process "  → Installing Go"
-    gvm install go1.x -B >> $LOG 2>&1
-    gvm use go1.x --default >> $LOG 2>&1
+    gvm install go1.x -B >> "$LOG" 2>&1
+    gvm use go1.x --default >> "$LOG" 2>&1
   fi
 
   _success "Installed Go"
@@ -199,22 +199,22 @@ function install_python3_venv() {
 
   case "${package_manager}" in
     apt-get)
-      sudo apt-get install -y python3-venv >> $LOG 2>&1
+      sudo apt-get install -y python3-venv >> "$LOG" 2>&1
       ;;
     dnf)
-      sudo dnf install -y python3-virtualenv >> $LOG 2>&1
+      sudo dnf install -y python3-virtualenv >> "$LOG" 2>&1
       ;;
     pacman)
-      sudo pacman -S --noconfirm python-virtualenv >> $LOG 2>&1
+      sudo pacman -S --noconfirm python-virtualenv >> "$LOG" 2>&1
       ;;
     zypper)
-      sudo zypper install -y python3-virtualenv >> $LOG 2>&1
+      sudo zypper install -y python3-virtualenv >> "$LOG" 2>&1
       ;;
     pkg)
-      pkg install -y py37-virtualenv >> $LOG 2>&1
+      pkg install -y py37-virtualenv >> "$LOG" 2>&1
       ;;
     apk)
-      apk add --no-cache py3-virtualenv >> $LOG 2>&1
+      apk add --no-cache py3-virtualenv >> "$LOG" 2>&1
       ;;
     *)
       _warning "Unsupported package manager. Please install Python3 venv manually"
