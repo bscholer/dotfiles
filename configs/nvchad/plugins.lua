@@ -60,10 +60,10 @@ local plugins = {
   {
     "neovim/nvim-lspconfig",
     dependencies = {
-      -- "jose-elias-alvarez/null-ls.nvim",
-      -- config = function()
-      --   require("custom.plugins-null-ls")
-      -- end,
+      "jose-elias-alvarez/null-ls.nvim",
+      config = function()
+        require("custom.plugins-null-ls")
+      end,
       -- "jay-babu/mason-null-ls.nvim",
       -- event = { "BufReadPre", "BufNewFile" },
       -- dependencies = {
@@ -91,6 +91,12 @@ local plugins = {
         "prettierd",
         "stylelint",
         "stylelint-lsp",
+        "bash-language-server",
+        "beautysh",
+        "fixjson",
+        "jsonlint",
+        "json-lsp",
+        "shellcheck"
       },
     },
   },

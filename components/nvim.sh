@@ -1,3 +1,5 @@
+#!/bin/bash
+
 function install_neovim() {
   # Check if Neovim is already installed globally
   if command -v nvim &> /dev/null; then

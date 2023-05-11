@@ -1,3 +1,5 @@
+#!/bin/bash
+
 install_lazygit() {
   _process "→ Installing lazygit"
 

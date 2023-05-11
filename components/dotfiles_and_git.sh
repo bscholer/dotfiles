@@ -1,3 +1,5 @@
+#!/bin/bash
+
 setup_git_authorship() {
   _process "→ Setting up Git author"
   git config --global user.email "$USER_GIT_AUTHOR_EMAIL" >> $LOG 2>&1

@@ -1,3 +1,4 @@
+#!/bin/bash
 
 install_ohmyzsh() {
   _process "→ Installing oh-my-zsh"

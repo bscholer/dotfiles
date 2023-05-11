@@ -1,3 +1,5 @@
+#!/bin/bash
+
 detect_package_manager() {
   if command -v apt-get &> /dev/null; then
     echo "apt-get"
