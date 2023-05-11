@@ -82,6 +82,30 @@ install_fonts() {
   [[ $? ]] && _success "Installed Nerd Fonts 🤓 "
 }
 
+install_gotop() {
+  _process "→ Installing gotop"
+
+  if command -v gotop > /dev/null; then
+    _success "gotop already installed"
+    return 0;
+  fi
+
+  if command -v go > /dev/null; then
+    _process "  → Installing from source"
+    go get github.com/cjbassi/gotop
+  else
+    _process "  → Installing prebuilt binary"
+    git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
+    /tmp/gotop/scripts/download.sh
+    sudo mv /tmp/gotop/gotop /usr/local/bin/
+  fi
+
+  if command -v gotop > /dev/null; then
+    _success "gotop installed successfully"
+  else
+    _warning "Failed to install gotop"
+  fi
+}
 
 install_node() {
   if [ "$INSTALL_NODE" = false ]; then

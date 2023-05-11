@@ -132,6 +132,7 @@ install() {
   fi
   install_ruby
   install_go
+  install_gotop
 
   install_fonts
   install_powerlevel10k
