@@ -36,7 +36,6 @@ alias rc='nvim ~/.zshrc'          # Open ~/.zshrc for editing
 alias src='source ~/.zshrc'      # Source ~/.zshrc
 alias open='xdg-open'            # Open a file using xdg-open
 alias top='gotop'                # top but better
-alias htop='gotop'               # top but better
 
 # Spotify
 alias sp='spt'
