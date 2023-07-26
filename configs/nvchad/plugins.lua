@@ -96,7 +96,7 @@ local plugins = {
         "fixjson",
         "jsonlint",
         "json-lsp",
-        "shellcheck"
+        "shellcheck",
       },
     },
   },

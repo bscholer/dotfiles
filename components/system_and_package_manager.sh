@@ -1,4 +1,5 @@
 #!/bin/bash
+# this file contains functions, designed to be used by other scripts
 
 detect_package_manager() {
   if command -v apt-get &> /dev/null; then
