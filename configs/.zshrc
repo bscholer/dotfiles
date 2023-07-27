@@ -58,7 +58,7 @@ alias rm='trash'                 # Remove using sudo and opions -r and -f
 alias i="sudo apt install"       # Install a package
 alias v="nvim"                    # Open a file in nvim
 alias d="docker"            # Docker
-alias dc="docker-compose"   # Docker compose
+alias dc="docker compose"   # Docker compose
 alias dl="lazydocker"       # lazydocker
 
 source ~/powerlevel10k/powerlevel10k.zsh-theme
