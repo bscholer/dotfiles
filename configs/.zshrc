@@ -25,17 +25,23 @@ plugins=(git z zsh-autosuggestions zsh-syntax-highlighting zsh-history-substring
 unsetopt complete_aliases
 
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
+bindkey '^I'   complete-word       # tab          | complete
+bindkey '^[[Z' autosuggest-accept  # shift + tab  | autosuggest
 
 #alias c='clear; ls; echo "\r";'   # Clear terminal screen
 alias c='clear'                  # Clear terminal screen
 alias sd='sudo shutdown now'     # Shutdown computer now
 alias sdr='sudo shutdown -r now' # Restart computer now
 alias nuke='rm -rf * -i'         # Delete all files/directories in a directory
-alias rc='nvim ~/.zshrc'          # Open ~/.zshrc for editing
+alias rc='nvim ~/.zshrc'         # Open ~/.zshrc for editing
 # alias vrc='nvim ~/.vimrc'         # Open ~/.vimrc for editing
 alias src='source ~/.zshrc'      # Source ~/.zshrc
 alias open='xdg-open'            # Open a file using xdg-open
 alias top='gotop'                # top but better
+alias p='python3'                # yeah
+alias py='python3'               # you know it
+alias pip='pip3'                 # yep
+alias a='ai ask'                 # ai fun
 
 # Spotify
 alias sp='spt'
