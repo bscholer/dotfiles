@@ -97,6 +97,7 @@ install_gotop() {
     go get github.com/cjbassi/gotop
   else
     _process "  → Installing prebuilt binary"
+    mkdir -p /tmp/gotop/gotop
     git clone --depth 1 https://github.com/cjbassi/gotop /tmp/gotop
     /tmp/gotop/scripts/download.sh
     sudo mv /tmp/gotop/gotop /usr/local/bin/
