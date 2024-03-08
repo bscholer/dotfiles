@@ -41,7 +41,7 @@ alias top='gotop'                # top but better
 alias p='python3'                # yeah
 alias py='python3'               # you know it
 alias pip='pip3'                 # yep
-alias a='ai ask'                 # ai fun
+# alias a='ai ask'                 # ai fun
 
 # Spotify
 alias sp='spt'
@@ -59,9 +59,9 @@ function qg() {             # A function to add, commit, and push all at once.
 }
 alias gl='lazygit'
 alias g='git'                    # git is too long
+alias gsu='git submodule update --remote --merge'
 
 alias rm='trash'                 # Remove using sudo and opions -r and -f
-alias i="sudo apt install"       # Install a package
 alias v="nvim"                    # Open a file in nvim
 alias d="docker"            # Docker
 alias dc="docker-compose"   # Docker compose
