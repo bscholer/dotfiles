@@ -2,6 +2,7 @@
 local M = {}
 M.mappings = require "custom.mappings"
 M.plugins = "custom.plugins"
+vim.opt.ignorecase = true
 
 -- use node from nvm if version number is specified
 -- export NEOVIM_NODE_VERSION=v16.14.2

@@ -6,7 +6,7 @@ set cursorline
 set wildmenu
 set showcmd
 set hlsearch
-set ignorecase
+set ignorecase smartcase
 set wildignorecase
 set autoindent
 set nostartofline

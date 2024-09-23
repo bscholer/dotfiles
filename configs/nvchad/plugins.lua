@@ -101,6 +101,7 @@ local plugins = {
         "jsonlint",
         "json-lsp",
         "shellcheck",
+        "dockerfile-language-server",
       },
     },
   },

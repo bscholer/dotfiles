@@ -10,9 +10,10 @@ local servers = {
   "cssls",
   "bashls",
   "clangd",
-  "tsserver",
+  "ts_ls",
   "pyright",
-  "jsonls"
+  "jsonls",
+  "dockerls",
 }
 
 for _, lsp in ipairs(servers) do
