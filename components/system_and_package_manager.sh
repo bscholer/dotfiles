@@ -73,38 +73,98 @@ install_programs() {
     apt-get)
       _process "Installing required dependencies using apt-get package manager"
       sudo apt-get install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed required dependencies using apt-get package manager"
+      else
+        _warning "Failed to install some required dependencies using apt-get package manager"
+      fi
       _process "Installing optional dependencies using apt-get package manager"
       sudo apt-get install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed optional dependencies using apt-get package manager"
+      else
+        _warning "Failed to install some optional dependencies using apt-get package manager"
+      fi
       ;;
     pacman)
       _process "Installing required dependencies using pacman package manager"
       sudo pacman -S "${REQUIRED_PROGRAMS[@]}" --noconfirm >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed required dependencies using pacman package manager"
+      else
+        _warning "Failed to install some required dependencies using pacman package manager"
+      fi
       _process "Installing optional dependencies using pacman package manager"
       sudo pacman -S "${OPTIONAL_PROGRAMS[@]}" --noconfirm >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed optional dependencies using pacman package manager"
+      else
+        _warning "Failed to install some optional dependencies using pacman package manager"
+      fi
       ;;
     dnf)
       _process "Installing required dependencies using dnf package manager"
       sudo dnf install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed required dependencies using dnf package manager"
+      else
+        _warning "Failed to install some required dependencies using dnf package manager"
+      fi
       _process "Installing optional dependencies using dnf package manager"
       sudo dnf install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed optional dependencies using dnf package manager"
+      else
+        _warning "Failed to install some optional dependencies using dnf package manager"
+      fi
       ;;
     yum)
       _process "Installing required dependencies using yum package manager"
       sudo yum install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed required dependencies using yum package manager"
+      else
+        _warning "Failed to install some required dependencies using yum package manager"
+      fi
       _process "Installing optional dependencies using yum package manager"
       sudo yum install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed optional dependencies using yum package manager"
+      else
+        _warning "Failed to install some optional dependencies using yum package manager"
+      fi
       ;;
     brew)
       _process "Installing required dependencies using brew package manager"
       brew install "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed required dependencies using brew package manager"
+      else
+        _warning "Failed to install some required dependencies using brew package manager"
+      fi
       _process "Installing optional dependencies using brew package manager"
       brew install "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed optional dependencies using brew package manager"
+      else
+        _warning "Failed to install some optional dependencies using brew package manager"
+      fi
       ;;
     pkg)
       _process "Installing required dependencies using pkg package manager"
       sudo pkg install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed required dependencies using pkg package manager"
+      else
+        _warning "Failed to install some required dependencies using pkg package manager"
+      fi
       _process "Installing optional dependencies using pkg package manager"
       sudo pkg install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
+      if [[ $? -eq 0 ]]; then
+        _success "Installed optional dependencies using pkg package manager"
+      else
+        _warning "Failed to install some optional dependencies using pkg package manager"
+      fi
       ;;
     *)
       _warning "No supported package manager found. Please install one and try again"
