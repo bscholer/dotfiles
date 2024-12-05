@@ -71,28 +71,40 @@ install_programs() {
 
   case "$package_manager" in
     apt-get)
-      _process "Installing dependencies using apt-get package manager"
-      sudo apt-get install -y "${PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing required dependencies using apt-get package manager"
+      sudo apt-get install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing optional dependencies using apt-get package manager"
+      sudo apt-get install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
       ;;
     pacman)
-      _process "Installing dependencies using pacman package manager"
-      sudo pacman -S "${PROGRAMS[@]}" --noconfirm >> "$LOG" 2>&1
+      _process "Installing required dependencies using pacman package manager"
+      sudo pacman -S "${REQUIRED_PROGRAMS[@]}" --noconfirm >> "$LOG" 2>&1
+      _process "Installing optional dependencies using pacman package manager"
+      sudo pacman -S "${OPTIONAL_PROGRAMS[@]}" --noconfirm >> "$LOG" 2>&1
       ;;
     dnf)
-      _process "Installing dependencies using dnf package manager"
-      sudo dnf install -y "${PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing required dependencies using dnf package manager"
+      sudo dnf install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing optional dependencies using dnf package manager"
+      sudo dnf install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
       ;;
     yum)
-      _process "Installing dependencies using yum package manager"
-      sudo yum install -y "${PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing required dependencies using yum package manager"
+      sudo yum install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing optional dependencies using yum package manager"
+      sudo yum install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
       ;;
     brew)
-      _process "Installing dependencies using brew package manager"
-      brew install "${PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing required dependencies using brew package manager"
+      brew install "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing optional dependencies using brew package manager"
+      brew install "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
       ;;
     pkg)
-      _process "Installing dependencies using pkg package manager"
-      sudo pkg install -y "${PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing required dependencies using pkg package manager"
+      sudo pkg install -y "${REQUIRED_PROGRAMS[@]}" >> "$LOG" 2>&1
+      _process "Installing optional dependencies using pkg package manager"
+      sudo pkg install -y "${OPTIONAL_PROGRAMS[@]}" >> "$LOG" 2>&1
       ;;
     *)
       _warning "No supported package manager found. Please install one and try again"
@@ -101,9 +113,9 @@ install_programs() {
   esac
 
   if [[ $? -eq 0 ]]; then
-    _success "Installed: ${PROGRAMS[@]}"
+    _success "Installed: ${REQUIRED_PROGRAMS[@]}"
+    _success "Installed: ${OPTIONAL_PROGRAMS[@]}"
   else
-    _warning "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
+    _warning "Please install the following packages first, then try again: ${REQUIRED_PROGRAMS[@]} \n" && exit
   fi
 }
-
