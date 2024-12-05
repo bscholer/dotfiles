@@ -5,8 +5,7 @@ GITHUB_REPO="dotfiles"
 USER_GIT_AUTHOR_NAME="Ben Scholer"
 USER_GIT_AUTHOR_EMAIL="github@benscholer.com"
 DIR="${HOME}/.dotfiles"
-REQUIRED_PROGRAMS=("git" "zsh" "vim" "fontconfig" "htop" "curl" "wget")
-OPTIONAL_PROGRAMS=("sl" "trash-cli")
+PROGRAMS=("git" "zsh" "vim" "sl" "trash-cli" "fontconfig" "htop" "curl" "wget")
 INSTALL_NODE=true
 INSTALL_NEOVIM=true
 package_manager=""
@@ -146,8 +145,7 @@ install() {
   download_and_source_scripts
 
   package_manager=$(detect_package_manager)
-  install_programs "${REQUIRED_PROGRAMS[@]}"
-  install_programs "${OPTIONAL_PROGRAMS[@]}"
+  install_programs
   install_lazygit
   install_lazydocker
   install_ohmyzsh
