@@ -17,7 +17,7 @@ detect_package_manager() {
   else
     _warning "No supported package manager found. Please install one and try again"
     exit 1
-  fi
+  }
 }
 
 update_package_manager() {
@@ -105,5 +105,12 @@ install_programs() {
   else
     _warning "Please install the following packages first, then try again: ${PROGRAMS[@]} \n" && exit
   fi
-}
 
+  _process "Installing trash-cli using pip"
+  pip install trash-cli >> "$LOG" 2>&1
+  if [[ $? -eq 0 ]]; then
+    _success "Installed trash-cli using pip"
+  else
+    _warning "Failed to install trash-cli using pip"
+  fi
+}
