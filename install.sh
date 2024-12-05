@@ -24,12 +24,6 @@ done
 
 mkdir -p "${LOG%/*}" && touch "$LOG"
 
-# Check if running on Android
-is_android=false
-if [[ "$(uname -o)" == "Android" ]]; then
-  is_android=true
-fi
-
 rainbow() {
   local message=$@
   local length=${#message}
@@ -38,21 +32,13 @@ rainbow() {
 
   for ((i=0; i<$length; i++)); do
     local char=${message:$i:1}
-    if $is_android; then
-      printf "%s" "$char"
-    else
-      printf "$(tput setaf ${colors[$color_index]})%s" "$char"
-    fi
+    printf "$(tput setaf ${colors[$color_index]})%s" "$char"
     ((color_index++))
     if ((color_index == ${#colors[@]})); then
       color_index=0
     fi
   done
-  if ! $is_android; then
-    printf "$(tput sgr0)\n"
-  else
-    printf "\n"
-  fi
+  printf "$(tput sgr0)\n"
 }
 
 _intro() {
@@ -67,40 +53,24 @@ _finish() {
 
 _info() {
   echo "$(date) INFO:  $@" >> "$LOG"
-  if $is_android; then
-    printf "%s...%s\n" "INFO: " "$@"
-  else
-    printf "$(tput setaf 4)%s...$(tput sgr0)\n" "$@"
-  fi
+  printf "$(tput setaf 4)%s...$(tput sgr0)\n" "$@"
 }
 
 _process() {
   echo "$(date) PROCESSING:  $@" >> "$LOG"
-  if $is_android; then
-    printf "%s...%s\n" "PROCESSING: " "$@"
-  else
-    printf "$(tput setaf 6)%s...$(tput sgr0)\n" "$@"
-  fi
+  printf "$(tput setaf 6)%s...$(tput sgr0)\n" "$@"
 }
 
 _success() {
   local message=$@
-  if $is_android; then
-    printf "✓ Success: %s\n" "$message"
-  else
-    printf "%s" "$(tput setaf 2)✓ Success: "
-    rainbow "$message"
-    printf "$(tput sgr0)\n"
-  fi
+  printf "%s" "$(tput setaf 2)✓ Success: "
+  rainbow "$message"
+  printf "$(tput sgr0)\n"
 }
 
 _warning() {
   echo "$(date) WARNING:  $@" >> "$LOG"
-  if $is_android; then
-    printf "⚠ Warning: %s!\n" "$@"
-  else
-    printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
-  fi
+  printf "$(tput setaf 3)⚠ Warning:$(tput sgr0) %s!\n" "$@"
 }
 
 download_and_source_scripts() {
