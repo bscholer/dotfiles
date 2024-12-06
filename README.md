@@ -30,6 +30,13 @@ wget --quiet -O - https://raw.github.com/bscholer/dotfiles/master/install.sh | b
     - Roboto Mono
     - DejaVu Sans Mono
 1. Install [powerlevel10k](https://github.com/romkatv/powerlevel10k)
+1. Install [neovim](https://neovim.io/) and [nvchad](https://nvchad.com/)
+1. Install [lazygit](https://github.com/jesseduffield/lazygit) and [lazydocker](https://github.com/jesseduffield/lazydocker)
+1. Install [gotop](https://github.com/cjbassi/gotop)
+1. Install [TrueZen.nvim](https://github.com/Pocco81/TrueZen.nvim)
+1. Install [copilot.lua](https://github.com/zbirenbaum/copilot.lua) and [copilot-cmp](https://github.com/zbirenbaum/copilot-cmp)
+1. Install [mason.nvim](https://github.com/williamboman/mason.nvim) and [null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)
+1. Install [tmux](https://github.com/tmux/tmux) and its plugins
 1. Download this repo
 1. Symlink dotfiles
     1. Backup existing dotfiles in `${HOME}/.dotfiles/backup`
@@ -43,3 +50,8 @@ wget --quiet -O - https://raw.github.com/bscholer/dotfiles/master/install.sh | b
 1. Set Git authorship (set your name at the top of [install.sh](https://github.com/bscholer/dotfiles/blob/master/install.sh))
 1. Generate SSH key for addition to GitHub
 1. Set default shell to `zsh`
+1. Load in some local settings if they exist in `~/.zshrc-local`
+
+## zshrc-local
+
+If you have any local settings that you don't want to include in the main `.zshrc` file, you can create a `.zshrc-local` file in your home directory. This file will be sourced at the end of the main `.zshrc` file, allowing you to override or add any settings specific to your local environment.
