@@ -41,7 +41,9 @@ alias top='gotop'                # top but better
 alias p='python3'                # yeah
 alias py='python3'               # you know it
 alias pip='pip3'                 # yep
-# alias a='ai ask'                 # ai fun
+# alias a='ai ask'                 # ai is not fun it is painful why are regression transformers in here
+alias ga='find . -type f -name "*.tif" -exec gdaladdo -r average {} 2 4 8 16 \;'
+
 
 # Spotify
 alias sp='spt'
