@@ -22,6 +22,7 @@ M.abc = {
     ["<C-l>"] = { "<cmd> TmuxNavigateRight<CR>", "Window Right" },
     ["<C-j>"] = { "<cmd> TmuxNavigateDown<CR>", "Window Down" },
     ["<C-k>"] = { "<cmd> TmuxNavigateUp<CR>", "Window Up" },
+    ["<leader>hh"] = { "<cmd> Copilot toggle<CR>", "Toggle Copilot" },
   },
   v = {
     ["<leader>zn"] = { ":'<,'>TZNarrow<CR>", "TrueZen Narrow" },
