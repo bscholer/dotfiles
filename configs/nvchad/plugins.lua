@@ -68,12 +68,6 @@ local plugins = {
       config = function()
         require("custom.plugins-null-ls")
       end,
-      -- "jay-babu/mason-null-ls.nvim",
-      -- event = { "BufReadPre", "BufNewFile" },
-      -- dependencies = {
-      --   "williamboman/mason.nvim",
-      --   "jose-elias-alvarez/null-ls.nvim",
-      -- },
     },
     config = function()
       require("plugins.configs.lspconfig")
@@ -111,6 +105,9 @@ local plugins = {
         "json-lsp",
         "shellcheck",
         "dockerfile-language-server",
+        "pyright",
+        "ruff",
+        "oxlint"
       },
     },
   },
@@ -122,6 +119,49 @@ local plugins = {
       vim.g.mkdp_filetypes = { "markdown" }
     end,
     ft = { "markdown" },
+  },
+  {
+    "hat0uma/csvview.nvim",
+    ---@module "csvview"
+    ---@type CsvView.Options
+    opts = {
+      parser = { comments = { "#", "//" } },
+      keymaps = {
+        textobject_field_inner = { "if", mode = { "o", "x" } },
+        textobject_field_outer = { "af", mode = { "o", "x" } },
+        jump_next_field_end = { "<Tab>", mode = { "n", "v" } },
+        jump_prev_field_end = { "<S-Tab>", mode = { "n", "v" } },
+        jump_next_row = { "<Enter>", mode = { "n", "v" } },
+        jump_prev_row = { "<S-Enter>", mode = { "n", "v" } },
+      },
+    },
+    cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
+  },
+  {
+    "folke/noice.nvim",
+    event = "VeryLazy",
+    opts = {
+    },
+    dependencies = {
+      "MunifTanjim/nui.nvim",
+      "rcarriga/nvim-notify",
+      require("noice").setup({
+        lsp = {
+          override = {
+            ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
+            ["vim.lsp.util.stylize_markdown"] = true,
+            ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
+          },
+        },
+        presets = {
+          bottom_search = true,
+          command_palette = true,
+          long_message_to_split = true,
+          inc_rename = false,
+          lsp_doc_border = false,
+        },
+      })
+    }
   },
 }
 

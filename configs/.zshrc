@@ -36,7 +36,6 @@ alias nuke='rm -rf * -i'         # Delete all files/directories in a directory
 alias rc='nvim ~/.zshrc'         # Open ~/.zshrc for editing
 # alias vrc='nvim ~/.vimrc'         # Open ~/.vimrc for editing
 alias src='source ~/.zshrc'      # Source ~/.zshrc
-alias open='xdg-open'            # Open a file using xdg-open
 alias top='gotop'                # top but better
 alias p='python3'                # yeah
 alias py='python3'               # you know it
@@ -62,6 +61,41 @@ function qg() {             # A function to add, commit, and push all at once.
 alias gl='lazygit'
 alias g='git'                    # git is too long
 alias gsu='git submodule update --remote --merge'
+alias gcp='git cherry-pick'
+alias gr='git revert'
+
+function mkpr() {
+  set -euo pipefail
+  # Prompt for JIRA ticket number (optional).
+  read -r -p "Enter JIRA ticket number (just number for default PROC-, leave blank to skip): " ticket
+  # Prompt for the PR title.
+  read -r -p "Enter PR title: " prTitle
+  # Build title and story section only if ticket was provided.
+  if [[ -n "$ticket" ]]; then
+    # normalize to full ticket prefix if needed
+    if [[ "$ticket" == *"-"* ]]; then
+      ticketId="$ticket"
+    else
+      ticketId="PROC-$ticket"
+    fi
+
+    title="[$ticketId] $prTitle"
+    story="# Story
+https://dronedeploy.atlassian.net/browse/$ticketId
+
+"
+  else
+    title="$prTitle"
+    story=""
+  fi
+
+  # Always have a Work Done section.
+  body="${story}# Work Done
+- "
+  # Create the draft PR and open it.
+  gh pr create --title "$title" --body "$body" --draft
+  gh pr view --web
+}
 
 alias rm='trash'                 # Remove using sudo and opions -r and -f
 alias v="nvim"                    # Open a file in nvim
@@ -96,3 +130,6 @@ if [ -f ~/.zshrc-local ]; then
 fi
 
 export PATH=$PATH:/home/bscholer/.spicetify
+
+export MANPAGER="vim -M +MANPAGER - "
+

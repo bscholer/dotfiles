@@ -14,6 +14,10 @@ local servers = {
   "pyright",
   "jsonls",
   "dockerls",
+  "pyright",
+  "ruff",
+  "oxlint",
+  "prettier"
 }
 
 for _, lsp in ipairs(servers) do
