@@ -91,10 +91,47 @@ alias gcp='git cherry-pick'
 alias gr='git revert'
 
 function mkpr() {
-  set -euo pipefail
-  read -r -p "Enter JIRA ticket number (just number for default PROC-, leave blank to skip): " ticket
-  read -r -p "Enter PR title: " prTitle
+  # Check if gh command exists
+  if ! command -v gh > /dev/null 2>&1; then
+    echo "Error: GitHub CLI (gh) is not installed. Please install it first."
+    return 1
+  fi
+
+  # Check if we're in a git repository
+  if ! git rev-parse --is-inside-work-tree > /dev/null 2>&1; then
+    echo "Error: Not in a git repository."
+    return 1
+  fi
+
+  # Check if we have any changes to commit
+  if [[ -z "$(git status --porcelain)" ]]; then
+    echo "Error: No changes to commit."
+    return 1
+  fi
+
+  # Use read with timeout to prevent hanging
+  local ticket=""
+  local prTitle=""
+  local REPLY=""
+  
+  echo -n "Enter JIRA ticket number (just number for default PROC-, leave blank to skip): "
+  read ticket
+  
+  echo -n "Enter PR title: "
+  read prTitle
+  
+  # Validate PR title is not empty
+  if [[ -z "$prTitle" ]]; then
+    echo "Error: PR title cannot be empty"
+    return 1
+  fi
+
+  local title=""
+  local story=""
+  
+  # Build the title and story
   if [[ -n "$ticket" ]]; then
+    local ticketId=""
     if [[ "$ticket" == *"-"* ]]; then
       ticketId="$ticket"
     else
@@ -109,13 +146,24 @@ https://dronedeploy.atlassian.net/browse/$ticketId
     title="$prTitle"
     story=""
   fi
-  body="${story}# Work Done
+
+  local body="${story}# Work Done
 - "
-  gh pr create --title "$title" --body "$body" --draft
-  gh pr view --web
+
+  # Create PR with error handling
+  if ! gh pr create --title "$title" --body "$body" --draft; then
+    echo "Error: Failed to create PR"
+    return 1
+  fi
+
+  # Open PR in browser with error handling
+  if ! gh pr view --web; then
+    echo "Error: Failed to open PR in browser"
+    return 1
+  fi
 }
 
-alias rm='trash'                 # Remove using sudo and opions -r and -f
+alias rm='trash'                # Remove using sudo and opions -r and -f
 alias v="nvim"                  # Open a file in nvim
 alias d="docker"                # Docker
 alias dc="docker-compose"       # Docker compose
