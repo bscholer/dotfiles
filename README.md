@@ -1,57 +1,74 @@
-# Dotfiles!
+# 🚀 My Ultimate Dev Setup
 
-I got tired of copying and pasting dotfiles, or forgoing my tooling on new systems. This solves that problem. Just run one command, and it will install everything (list below)! Ta-da 🎉!
+Hey! I got tired of setting up my development environment from scratch on new machines, so I automated everything. One command, and you get my entire carefully curated dev setup. Pretty neat, right? 🎉
 
-This repo started life as [gjunkie's dotfiles-starter-kit](https://github.com/gjunkie/dotfiles-starter-kit/blob/main/install), but has been added to and modified significantly. It also takes some bits from [jotyGill's ezsh](https://github.com/jotyGill/ezsh).
+## 🌟 What's Cool About It?
 
-## Install
+- 🛠️ **Works Everywhere**: I've made it work on Linux, macOS, and BSD because I use different systems
+- 🔄 **Smart Setup**: Figures out what package manager you're using and just works (hopefully)
+- 🔒 **No Fuss**: Sets up SSH keys and GitHub config automatically
+- 🎨 **Looks Good**: Because life's too short for ugly terminals
+- ⚡ **Fast**: Because I'm impatient
+
+## 🚀 Just Run This
 
 ```bash
 wget --quiet -O - https://raw.github.com/bscholer/dotfiles/master/install.sh | bash -s
 ```
 
-## What it does
+## ✨ What You Get
 
-1. If using `apt` or `dnf`, updates
-1. Install a handful of what I consider to be necessary programs
-1. Install [oh-my-zsh](https://ohmyz.sh/)
-1. Install zsh plugins
-    - [zsh-autosuggestions](https://github.com/zsh-users/zsh-autosuggestions)
-    - [zsh-syntax-highlighting](https://github.com/zsh-users/zsh-syntax-highlighting.git)
-    - [zsh-completions](https://github.com/zsh-users/zsh-completions)
-    - [zsh-history-substring-search](https://github.com/zsh-users/zsh-history-substring-search)
-1. Install [colorls](https://github.com/athityakumar/colorls)
-1. Install node stuff
-    - [nvm](https://github.com/nvm-sh/nvm)
-    - [node.js and npm](https://nodejs.org/en/)
-    - [yarn](https://yarnpkg.com/)
-1. Install [Nerd fonts](https://www.nerdfonts.com/)
-    - Hack
-    - Roboto Mono
-    - DejaVu Sans Mono
-1. Install [powerlevel10k](https://github.com/romkatv/powerlevel10k)
-1. Install [neovim](https://neovim.io/) and [nvchad](https://nvchad.com/)
-1. Install [lazygit](https://github.com/jesseduffield/lazygit) and [lazydocker](https://github.com/jesseduffield/lazydocker)
-1. Install [gotop](https://github.com/cjbassi/gotop)
-1. Install [TrueZen.nvim](https://github.com/Pocco81/TrueZen.nvim)
-1. Install [copilot.lua](https://github.com/zbirenbaum/copilot.lua) and [copilot-cmp](https://github.com/zbirenbaum/copilot-cmp)
-1. Install [mason.nvim](https://github.com/williamboman/mason.nvim) and [null-ls.nvim](https://github.com/jose-elias-alvarez/null-ls.nvim)
-1. Install [tmux](https://github.com/tmux/tmux) and its plugins
-1. Download this repo
-1. Symlink dotfiles
-    1. Backup existing dotfiles in `${HOME}/.dotfiles/backup`
-1. Install [vundle](https://github.com/VundleVim/Vundle.vim) and `vim` plugins (only the big ones are below) (see [.vimrc](https://github.com/bscholer/dotfiles/blob/master/configs/.vimrc) for full list)
-    - [NERDTree](https://github.com/preservim/nerdtree)
-    - [vim-airline](https://github.com/vim-airline/vim-airline) and associated plugins
-    - [CoC](https://github.com/neoclide/coc.nvim) (auto-completion and more)
-    - [fzf](https://github.com/junegunn/fzf.vim) (fuzzy-find)
-    - [vim-fugitive](https://github.com/tpope/vim-fugitive)
-    - [auto-pairs](https://github.com/jiangmiao/auto-pairs)
-1. Set Git authorship (set your name at the top of [install.sh](https://github.com/bscholer/dotfiles/blob/master/install.sh))
-1. Generate SSH key for addition to GitHub
-1. Set default shell to `zsh`
-1. Load in some local settings if they exist in `~/.zshrc-local`
+### 🔧 The Good Stuff
+- All the essential dev tools (git, vim, curl, wget, etc.)
+- Some awesome modern replacements I can't live without:
+  - 🌈 [colorls](https://github.com/athityakumar/colorls) - Makes `ls` actually nice to look at
+  - 📊 [gotop](https://github.com/cjbassi/gotop) - Pretty system monitoring
+  - 🐳 [lazydocker](https://github.com/jesseduffield/lazydocker) - Docker without the headache
+  - 📝 [lazygit](https://github.com/jesseduffield/lazygit) - Git but better
 
-## zshrc-local
+### 🐚 Terminal Setup
+- [Oh My Zsh](https://ohmyz.sh/) with my favorite plugins:
+  - zsh-autosuggestions (because typing is overrated)
+  - zsh-syntax-highlighting
+  - zsh-completions
+  - zsh-history-substring-search
+- ⚡ [Powerlevel10k](https://github.com/romkatv/powerlevel10k) theme (it's gorgeous!)
 
-If you have any local settings that you don't want to include in the main `.zshrc` file, you can create a `.zshrc-local` file in your home directory. This file will be sourced at the end of the main `.zshrc` file, allowing you to override or add any settings specific to your local environment.
+### 📝 Neovim Setup
+- [Neovim](https://neovim.io/) with [NvChad](https://nvchad.com/) (because I like my editor fancy)
+- LSP support via Mason
+- Copilot integration (my favorite pair programmer)
+- Lazy plugin management
+
+### 🔤 Dev Environment
+- Node.js with nvm (because version management should be easy)
+- Python virtual environment support
+- Ruby and Go setups
+- My favorite coding fonts:
+  - JetBrains Mono Nerd Font
+  - Hack Nerd Font
+  - Roboto Mono Nerd Font
+  - DejaVu Sans Mono Nerd Font
+
+## 🎨 Make It Yours
+
+### Local Tweaks
+Got machine-specific settings? Drop them in `~/.zshrc-local` and they'll just work.
+
+### Git Setup
+The script will:
+1. Set up your Git identity
+2. Generate SSH keys for GitHub
+3. Switch to SSH for future operations
+
+## 🔄 Keeping It Fresh
+
+Stay up to date with:
+
+```bash
+cd ~/.dotfiles && git pull
+```
+
+## 🙌 Credit Where It's Due
+
+This started as a fork of [gjunkie's dotfiles-starter-kit](https://github.com/gjunkie/dotfiles-starter-kit/blob/main/install), but I've added a bunch of stuff I use daily. Thanks for the inspiration!
