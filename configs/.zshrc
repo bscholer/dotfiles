@@ -103,12 +103,6 @@ function mkpr() {
     return 1
   fi
 
-  # Check if we have any changes to commit
-  if [[ -z "$(git status --porcelain)" ]]; then
-    echo "Error: No changes to commit."
-    return 1
-  fi
-
   # Use read with timeout to prevent hanging
   local ticket=""
   local prTitle=""
@@ -196,3 +190,4 @@ export PATH=$PATH:/home/bscholer/.spicetify
 
 export MANPAGER="vim -M +MANPAGER - "
 
+nvm use --lts
