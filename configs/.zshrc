@@ -70,6 +70,7 @@ alias p='python3'                # yeah
 alias py='python3'               # you know it
 alias pip='pip3'                 # yep
 alias ga='find . -type f -name "*.tif" -exec gdaladdo -r average {} 2 4 8 16 \;'
+eval "$(zoxide init --cmd cd zsh)"
 
 # Spotify
 alias sp='spt'
@@ -103,27 +104,42 @@ function mkpr() {
     return 1
   fi
 
-  # Use read with timeout to prevent hanging
+  # Get current branch name
+  local branch
+  branch=$(git rev-parse --abbrev-ref HEAD 2>/dev/null)
   local ticket=""
+
+  # Extract Jira ticket from branch name if present
+  if [[ "$SHELL" == *"zsh"* ]]; then
+    if [[ $branch =~ .*/([A-Z]+-[0-9]+) ]]; then
+      ticket="${match[1]}"
+    fi
+  else
+    if [[ $branch =~ .*/([A-Z]+-[0-9]+) ]]; then
+      ticket="${BASH_REMATCH[1]}"
+    fi
+  fi
+
   local prTitle=""
-  local REPLY=""
-  
-  echo -n "Enter JIRA ticket number (just number for default PROC-, leave blank to skip): "
-  read ticket
-  
   echo -n "Enter PR title: "
   read prTitle
-  
+
   # Validate PR title is not empty
   if [[ -z "$prTitle" ]]; then
     echo "Error: PR title cannot be empty"
     return 1
   fi
 
+  # If no ticket found, ask user
+  if [[ -z "$ticket" ]]; then
+    echo -n "Enter JIRA ticket number (just number for default PROC-, leave blank to skip): "
+    read ticket
+  fi
+
   local title=""
   local story=""
-  
-  # Build the title and story
+
+  # Build title and story
   if [[ -n "$ticket" ]]; then
     local ticketId=""
     if [[ "$ticket" == *"-"* ]]; then
@@ -138,7 +154,6 @@ https://dronedeploy.atlassian.net/browse/$ticketId
 "
   else
     title="$prTitle"
-    story=""
   fi
 
   local body="${story}# Work Done
@@ -156,6 +171,7 @@ https://dronedeploy.atlassian.net/browse/$ticketId
     return 1
   fi
 }
+
 
 alias rm='trash'                # Remove using sudo and opions -r and -f
 alias v="nvim"                  # Open a file in nvim
