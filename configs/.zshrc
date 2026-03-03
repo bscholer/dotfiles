@@ -69,6 +69,7 @@ alias top='gotop'                # top but better
 alias p='python3'                # yeah
 alias py='python3'               # you know it
 alias pip='pip3'                 # yep
+alias tf='terraform'
 alias ga='find . -type f -name "*.tif" -exec gdaladdo -r average {} 2 4 8 16 \;'
 eval "$(zoxide init --cmd cd zsh)"
 
@@ -90,6 +91,8 @@ alias g='git'                    # git is too long
 alias gsu='git submodule update --remote --merge'
 alias gcp='git cherry-pick'
 alias gr='git revert'
+
+alias dl='lazydocker'
 
 function mkpr() {
   # Check if gh command exists
@@ -207,3 +210,12 @@ export PATH=$PATH:/home/bscholer/.spicetify
 export MANPAGER="vim -M +MANPAGER - "
 
 nvm use --lts
+
+alias cl="claude --dangerously-skip-permissions"
+
+### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
+export PATH="/Users/bscholer/.rd/bin:$PATH"
+### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
+
+# Added by Antigravity
+export PATH="/Users/bscholer/.antigravity/antigravity/bin:$PATH"
