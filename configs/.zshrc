@@ -71,7 +71,6 @@ alias py='python3'               # you know it
 alias pip='pip3'                 # yep
 alias tf='terraform'
 alias ga='find . -type f -name "*.tif" -exec gdaladdo -r average {} 2 4 8 16 \;'
-eval "$(zoxide init --cmd cd zsh)"
 
 # Spotify
 alias sp='spt'
@@ -209,8 +208,6 @@ export PATH=$PATH:/home/bscholer/.spicetify
 
 export MANPAGER="vim -M +MANPAGER - "
 
-nvm use --lts
-
 alias cl="claude --dangerously-skip-permissions"
 
 ### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
@@ -219,3 +216,5 @@ export PATH="/Users/bscholer/.rd/bin:$PATH"
 
 # Added by Antigravity
 export PATH="/Users/bscholer/.antigravity/antigravity/bin:$PATH"
+
+eval "$(zoxide init --cmd cd zsh)"
