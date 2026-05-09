@@ -200,21 +200,19 @@ if [ -x "$(command -v colorls)" ]; then
 fi
 
 # Load in some local settings if they exist
+# Put machine-specific stuff (PATH additions for tools installed by GUI
+# apps like Rancher Desktop, work-only aliases, etc.) here so it doesn't
+# pollute the dotfiles repo.
 if [ -f ~/.zshrc-local ]; then
   source ~/.zshrc-local
 fi
 
-export PATH=$PATH:/home/bscholer/.spicetify
-
 export MANPAGER="vim -M +MANPAGER - "
 
 alias cl="claude --dangerously-skip-permissions"
+alias cap="claude --dangerously-skip-permissions --model opus --system-prompt ~/projects/captain/AGENT.md"
 
-### MANAGED BY RANCHER DESKTOP START (DO NOT EDIT)
-export PATH="/Users/bscholer/.rd/bin:$PATH"
-### MANAGED BY RANCHER DESKTOP END (DO NOT EDIT)
-
-# Added by Antigravity
-export PATH="/Users/bscholer/.antigravity/antigravity/bin:$PATH"
-
-eval "$(zoxide init --cmd cd zsh)"
+export _ZO_DOCTOR=0
+if command -v zoxide >/dev/null 2>&1; then
+  eval "$(zoxide init --cmd cd zsh)"
+fi

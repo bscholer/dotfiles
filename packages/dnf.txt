@@ -1,0 +1,23 @@
+# dnf packages — one per line, comments allowed.
+git
+zsh
+vim
+neovim
+tmux
+curl
+wget
+htop
+sl
+trash-cli
+fontconfig
+ca-certificates
+fzf
+ripgrep
+jq
+golang
+ruby
+ruby-devel
+python3
+python3-pip
+unzip
+@development-tools

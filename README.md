@@ -1,74 +1,66 @@
-# 🚀 My Ultimate Dev Setup
+# Dotfiles
 
-Hey! I got tired of setting up my development environment from scratch on new machines, so I automated everything. One command, and you get my entire carefully curated dev setup. Pretty neat, right? 🎉
+My personal dotfiles, managed with [chezmoi](https://www.chezmoi.io/).
 
-## 🌟 What's Cool About It?
-
-- 🛠️ **Works Everywhere**: I've made it work on Linux, macOS, and BSD because I use different systems
-- 🔄 **Smart Setup**: Figures out what package manager you're using and just works (hopefully)
-- 🔒 **No Fuss**: Sets up SSH keys and GitHub config automatically
-- 🎨 **Looks Good**: Because life's too short for ugly terminals
-- ⚡ **Fast**: Because I'm impatient
-
-## 🚀 Just Run This
+## Fresh machine
 
 ```bash
-wget --quiet -O - https://raw.github.com/bscholer/dotfiles/master/install.sh | bash -s
+curl -fsSL https://raw.githubusercontent.com/bscholer/dotfiles/master/bootstrap.sh | bash
 ```
 
-## ✨ What You Get
+That installs chezmoi (via brew on macOS, the official installer on Linux),
+clones this repo to `~/.local/share/chezmoi`, prompts for a couple of values
+(name, email, whether to install Node/NvChad), and applies everything.
 
-### 🔧 The Good Stuff
-- All the essential dev tools (git, vim, curl, wget, etc.)
-- Some awesome modern replacements I can't live without:
-  - 🌈 [colorls](https://github.com/athityakumar/colorls) - Makes `ls` actually nice to look at
-  - 📊 [gotop](https://github.com/cjbassi/gotop) - Pretty system monitoring
-  - 🐳 [lazydocker](https://github.com/jesseduffield/lazydocker) - Docker without the headache
-  - 📝 [lazygit](https://github.com/jesseduffield/lazygit) - Git but better
+## Layout
 
-### 🐚 Terminal Setup
-- [Oh My Zsh](https://ohmyz.sh/) with my favorite plugins:
-  - zsh-autosuggestions (because typing is overrated)
-  - zsh-syntax-highlighting
-  - zsh-completions
-  - zsh-history-substring-search
-- ⚡ [Powerlevel10k](https://github.com/romkatv/powerlevel10k) theme (it's gorgeous!)
+```
+.
+├── bootstrap.sh                # one-shot installer for new machines
+├── packages/                   # everything the system package manager owns
+│   ├── Brewfile                # macOS — `brew bundle`
+│   ├── apt.txt                 # Linux/Debian — one package per line
+│   ├── dnf.txt                 # Linux/Fedora — one package per line
+│   └── install.sh              # detects OS, installs the right list,
+│                               # plus extras (lazygit/lazydocker/gh/zoxide
+│                               # /nerd fonts on Linux)
+├── home/                       # chezmoi source dir
+│   ├── .chezmoi.toml.tmpl      # prompts that populate template vars
+│   ├── dot_zshrc               # → ~/.zshrc
+│   ├── dot_p10k.zsh            # → ~/.p10k.zsh
+│   ├── dot_tmux.conf
+│   ├── dot_vimrc / dot_ideavimrc / dot_vscodevimrc
+│   ├── dot_config/nvim/lua/custom/...   # NvChad overlays
+│   ├── run_onchange_before_10-install-packages.sh.tmpl   # invokes packages/install.sh
+│   └── run_once_after_*.sh                               # bootstrap omz, p10k,
+│                                                        # tpm, NvChad, nvm,
+│                                                        # ssh key, default shell
+└── .chezmoiroot                # tells chezmoi the source is `home/`
+```
 
-### 📝 Neovim Setup
-- [Neovim](https://neovim.io/) with [NvChad](https://nvchad.com/) (because I like my editor fancy)
-- LSP support via Mason
-- Copilot integration (my favorite pair programmer)
-- Lazy plugin management
+## Day-to-day
 
-### 🔤 Dev Environment
-- Node.js with nvm (because version management should be easy)
-- Python virtual environment support
-- Ruby and Go setups
-- My favorite coding fonts:
-  - JetBrains Mono Nerd Font
-  - Hack Nerd Font
-  - Roboto Mono Nerd Font
-  - DejaVu Sans Mono Nerd Font
+| What you want | What to run |
+| --- | --- |
+| Apply local changes | `make apply` (or `chezmoi apply --source=$PWD`) |
+| Preview changes | `make diff` |
+| Add a config you've been editing in `$HOME` | `chezmoi add ~/.foo` |
+| Pull and apply (other machine) | `chezmoi update` |
+| Re-run package install | `packages/install.sh` |
+| Re-run a `run_once_` script | edit it, or `chezmoi state delete-bucket --bucket=scriptState` |
 
-## 🎨 Make It Yours
+## Machine-specific tweaks
 
-### Local Tweaks
-Got machine-specific settings? Drop them in `~/.zshrc-local` and they'll just work.
+`~/.zshrc` sources `~/.zshrc-local` if it exists. Put per-machine PATH
+additions, work-only aliases, and anything injected by GUI apps (Rancher
+Desktop, Antigravity, etc.) there — keeps the dotfiles repo portable.
 
-### Git Setup
-The script will:
-1. Set up your Git identity
-2. Generate SSH keys for GitHub
-3. Switch to SSH for future operations
-
-## 🔄 Keeping It Fresh
-
-Stay up to date with:
+## Containers
 
 ```bash
-cd ~/.dotfiles && git pull
+make ubuntu    # build & shell into a fresh ubuntu image with the dotfiles applied
+make fedora    # same for fedora
 ```
 
-## 🙌 Credit Where It's Due
-
-This started as a fork of [gjunkie's dotfiles-starter-kit](https://github.com/gjunkie/dotfiles-starter-kit/blob/main/install), but I've added a bunch of stuff I use daily. Thanks for the inspiration!
+Both Dockerfiles `COPY` the local working tree, so you can test uncommitted
+changes before pushing.

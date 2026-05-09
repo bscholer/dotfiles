@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Re-runs whenever any of the package manifests change (because chezmoi
+# hashes the rendered script content).
+#
+# Brewfile  sha256: {{ joinPath .chezmoi.workingTree "packages" "Brewfile"  | include | sha256sum }}
+# apt.txt   sha256: {{ joinPath .chezmoi.workingTree "packages" "apt.txt"   | include | sha256sum }}
+# dnf.txt   sha256: {{ joinPath .chezmoi.workingTree "packages" "dnf.txt"   | include | sha256sum }}
+# install   sha256: {{ joinPath .chezmoi.workingTree "packages" "install.sh" | include | sha256sum }}
+
+set -euo pipefail
+exec "{{ .chezmoi.workingTree }}/packages/install.sh"

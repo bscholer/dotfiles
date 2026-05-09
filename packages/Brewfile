@@ -1,0 +1,44 @@
+# macOS packages — installed via `brew bundle`.
+# This file is the source of truth for everything brew can install on Mac.
+# Run `brew bundle --file packages/Brewfile` (or just `bootstrap.sh`).
+
+# Shells & terminal essentials
+brew "zsh"
+brew "tmux"
+brew "fzf"
+brew "zoxide"
+
+# Modern CLI replacements / "lazy" wrappers
+brew "lazygit"
+brew "lazydocker"
+brew "trash"        # provides `trash` CLI used by `alias rm=trash`
+brew "btop"         # gotop is unmaintained; btop is the modern equivalent
+brew "sl"
+
+# Editors
+brew "vim"
+brew "neovim"
+
+# Languages / version managers
+brew "go"
+brew "ruby"
+brew "python@3.12"
+
+# Git / GitHub
+brew "git"
+brew "gh"
+
+# Misc utilities used in aliases / scripts
+brew "htop"
+brew "curl"
+brew "wget"
+brew "fontconfig"
+brew "terraform"
+brew "jq"
+brew "coreutils"
+
+# Nerd Fonts (these are the ones the old installer downloaded by hand)
+cask "font-jetbrains-mono-nerd-font"
+cask "font-hack-nerd-font"
+cask "font-roboto-mono-nerd-font"
+cask "font-dejavu-sans-mono-nerd-font"

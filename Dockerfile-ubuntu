@@ -1,17 +1,20 @@
 FROM ubuntu:latest
 
-RUN apt-get update -y && apt-get upgrade -y
+ENV DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get install -y sudo apt-utils dialog vim zsh curl wget git sl trash-cli ruby-full build-essential fontconfig passwd htop
-
-RUN apt-get install -y dialog apt-utils
-
-RUN apt-get update -y && apt-get upgrade -y
+RUN apt-get update -y \
+ && apt-get install -y --no-install-recommends \
+      sudo curl ca-certificates git zsh passwd \
+ && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root
 
-ENV DEBIAN_FRONTEND=noninteractive
+# Copy the whole repo in so chezmoi can use it as a local source instead of
+# cloning from GitHub (lets us test uncommitted changes).
+COPY . /root/.dotfiles
 
-COPY install.sh ./
+# Install chezmoi, then init from the local repo and apply.
+RUN curl -fsSL https://get.chezmoi.io | sh -s -- -b /usr/local/bin \
+ && chezmoi init --apply --source=/root/.dotfiles
 
-RUN ./install.sh
+CMD ["/usr/bin/zsh"]

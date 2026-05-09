@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+{{ if not .install_nvchad -}}
+echo "→ Skipping NvChad install (install_nvchad = false)"
+exit 0
+{{- end }}
+
+if ! command -v nvim >/dev/null 2>&1; then
+  echo "! Neovim not installed; skipping NvChad bootstrap"
+  exit 0
+fi
+
+# NvChad's starter ships its own lua/custom/ files. Our chezmoi-managed
+# ~/.config/nvim/lua/custom/* overlays on top after this clone, so we need
+# the rest of NvChad's starter at ~/.config/nvim.
+NVIM_DIR="$HOME/.config/nvim"
+
+if [[ -d "$NVIM_DIR/.git" ]] || [[ -f "$NVIM_DIR/init.lua" ]]; then
+  echo "→ Neovim config already present at $NVIM_DIR; not touching it"
+  exit 0
+fi
+
+echo "→ Installing NvChad starter into $NVIM_DIR"
+mkdir -p "$NVIM_DIR"
+# Save chezmoi-managed custom/ out of the way, clone NvChad, then restore.
+TMP="$(mktemp -d)"
+if [[ -d "$NVIM_DIR/lua/custom" ]]; then
+  mv "$NVIM_DIR/lua/custom" "$TMP/custom"
+fi
+rm -rf "$NVIM_DIR"
+git clone --depth=1 --quiet https://github.com/NvChad/NvChad "$NVIM_DIR"
+if [[ -d "$TMP/custom" ]]; then
+  rm -rf "$NVIM_DIR/lua/custom"
+  mv "$TMP/custom" "$NVIM_DIR/lua/custom"
+fi
+rm -rf "$TMP"
+
+echo "  Run \`nvim\` once to let lazy.nvim sync plugins, then \`:MasonInstallAll\`"

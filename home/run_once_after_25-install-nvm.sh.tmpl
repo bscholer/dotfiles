@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+{{ if not .install_node -}}
+echo "→ Skipping nvm install (install_node = false)"
+exit 0
+{{- end }}
+
+NVM_DIR="${NVM_DIR:-$HOME/.nvm}"
+if [[ -d "$NVM_DIR/.git" ]]; then
+  echo "→ nvm already installed at $NVM_DIR"
+  exit 0
+fi
+
+echo "→ Installing nvm into $NVM_DIR"
+git clone --quiet https://github.com/nvm-sh/nvm.git "$NVM_DIR"
+(
+  cd "$NVM_DIR"
+  latest_tag=$(git describe --abbrev=0 --tags --match "v[0-9]*" "$(git rev-list --tags --max-count=1)")
+  git checkout --quiet "$latest_tag"
+)
+
+# shellcheck disable=SC1091
+\. "$NVM_DIR/nvm.sh"
+if ! command -v node >/dev/null 2>&1; then
+  echo "→ Installing latest Node via nvm"
+  nvm install --lts >/dev/null
+fi
