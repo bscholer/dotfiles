@@ -1,0 +1,10 @@
+{{- $name  := promptStringOnce . "name"  "Full name"  "Ben Scholer" -}}
+{{- $email := promptStringOnce . "email" "Git email"  "github@benscholer.com" -}}
+{{- $installNode   := promptBoolOnce   . "install_node"   "Install Node via nvm"   true -}}
+{{- $installNvchad := promptBoolOnce   . "install_nvchad" "Install Neovim + NvChad" true -}}
+
+[data]
+    name           = {{ $name           | quote }}
+    email          = {{ $email          | quote }}
+    install_node   = {{ $installNode }}
+    install_nvchad = {{ $installNvchad }}

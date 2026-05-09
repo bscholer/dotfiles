@@ -1,13 +1,13 @@
 FROM fedora:latest
 
-RUN dnf update -y
-
-RUN dnf install -y sudo dialog vim zsh curl wget git sl trash-cli ruby automake gcc gcc-c++ kernel-devel fontconfig passwd htop
-
-RUN dnf update -y
+RUN dnf install -y sudo curl git zsh passwd \
+ && dnf clean all
 
 WORKDIR /root
 
-COPY install.sh ./
+COPY . /root/.dotfiles
 
-RUN ./install.sh
+RUN curl -fsSL https://get.chezmoi.io | sh -s -- -b /usr/local/bin \
+ && chezmoi init --apply --source=/root/.dotfiles
+
+CMD ["/usr/bin/zsh"]

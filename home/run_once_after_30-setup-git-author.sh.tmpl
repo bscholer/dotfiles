@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+git config --global user.name  {{ .name  | quote }}
+git config --global user.email {{ .email | quote }}
+echo "→ git user.name / user.email set"

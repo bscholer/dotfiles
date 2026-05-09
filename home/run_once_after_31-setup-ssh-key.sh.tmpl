@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+KEY="$HOME/.ssh/id_ed25519"
+mkdir -p "$HOME/.ssh"
+chmod 700 "$HOME/.ssh"
+
+if [[ -f "$KEY.pub" ]]; then
+  echo "→ SSH key already exists at $KEY"
+  exit 0
+fi
+
+echo "→ Generating SSH key"
+ssh-keygen -t ed25519 -f "$KEY" -C {{ .email | quote }} -q -N ""
+
+cat <<EOF
+
+==========================================================================
+Add the public key below to GitHub (https://github.com/settings/keys):
+
+$(cat "$KEY.pub")
+==========================================================================
+EOF

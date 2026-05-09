@@ -1,0 +1,24 @@
+# apt packages — one per line, comments allowed.
+git
+zsh
+vim
+neovim
+tmux
+curl
+wget
+htop
+sl
+trash-cli
+fontconfig
+build-essential
+ca-certificates
+fzf
+ripgrep
+jq
+golang-go
+ruby-full
+ruby-dev
+python3
+python3-pip
+python3-venv
+unzip
