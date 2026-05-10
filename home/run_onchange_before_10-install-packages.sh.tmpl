@@ -7,5 +7,10 @@
 # dnf.txt   sha256: {{ joinPath .chezmoi.workingTree "packages" "dnf.txt"   | include | sha256sum }}
 # install   sha256: {{ joinPath .chezmoi.workingTree "packages" "install.sh" | include | sha256sum }}
 
-set -euo pipefail
-exec "{{ .chezmoi.workingTree }}/packages/install.sh"
+set -uo pipefail
+# Don't abort the whole `chezmoi apply` if a single tool's installer
+# misbehaves. The dotfiles getting written matters more than every last
+# extra being installed; the user can re-run `packages/install.sh`
+# afterwards to investigate.
+"{{ .chezmoi.workingTree }}/packages/install.sh" || \
+  echo "! packages/install.sh exited non-zero — continuing with chezmoi apply"

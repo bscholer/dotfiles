@@ -88,9 +88,14 @@ install_gh_linux() {
 }
 
 install_zoxide_linux() {
+  # zoxide is in apt (since 22.04) and dnf, so it's already covered by
+  # apt.txt / dnf.txt. Only fall back to curl if the package wasn't
+  # available — and if even that fails, don't abort the whole install
+  # (zoxide upstream's installer doesn't handle every libc/arch combo).
   if command -v zoxide >/dev/null 2>&1; then return 0; fi
-  log "Installing zoxide"
-  curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash
+  log "Installing zoxide (curl fallback)"
+  curl -fsSL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | bash || \
+    warn "zoxide install failed — install it via your package manager"
 }
 
 install_btop_linux() {
@@ -117,13 +122,15 @@ install_nerd_fonts_linux() {
 }
 
 install_linux_extras() {
-  install_lazygit_linux
-  install_lazydocker_linux
-  install_gh_linux
-  install_zoxide_linux
-  install_btop_linux
-  install_nerd_fonts_linux
-  ok "Linux extras installed"
+  # Best-effort: a single tool failing should not abort everything else,
+  # otherwise one broken upstream installer takes the whole bootstrap down.
+  install_lazygit_linux    || warn "lazygit install failed"
+  install_lazydocker_linux || warn "lazydocker install failed"
+  install_gh_linux         || warn "gh install failed"
+  install_zoxide_linux     || warn "zoxide install failed"
+  install_btop_linux       || warn "btop install failed"
+  install_nerd_fonts_linux || warn "Nerd Fonts install failed"
+  ok "Linux extras installed (any failures above are non-fatal)"
 }
 
 case "$(uname -s)" in

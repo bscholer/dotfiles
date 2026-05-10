@@ -17,8 +17,13 @@ if ! grep -qx "$ZSH_PATH" /etc/shells 2>/dev/null; then
   echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
 fi
 
-if command -v chsh >/dev/null 2>&1; then
-  echo "→ Changing default shell to $ZSH_PATH"
+# `chsh` typically prompts for the user's password via PAM, which kills
+# unattended bootstraps. Prefer `sudo chsh` when sudo is available, and
+# fall back to direct chsh if not.
+echo "→ Changing default shell to $ZSH_PATH"
+if sudo -n true 2>/dev/null; then
+  sudo chsh -s "$ZSH_PATH" "$USER" || echo "! sudo chsh failed; run it manually"
+elif command -v chsh >/dev/null 2>&1; then
   chsh -s "$ZSH_PATH" || echo "! chsh failed; run it manually"
 else
   echo "! chsh not available; set zsh as default shell manually"
