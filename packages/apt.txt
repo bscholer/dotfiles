@@ -15,6 +15,7 @@ ca-certificates
 fzf
 ripgrep
 jq
+zoxide
 golang-go
 ruby-full
 ruby-dev
